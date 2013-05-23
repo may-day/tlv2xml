@@ -146,7 +146,7 @@ public abstract class AbstractBaumanAdapter {
     static final String k12 = "#K12";
     static final String[] k12fields = {};
 
-    /* Kalkblatt diverse Faktoren, Zu-und Abschl�ge*/
+    /* Kalkblatt diverse Faktoren, Zu-und Abschläge*/
     static final String a1 = "#A1 ";
     static final String[] a1fields = {"calcpageNumber", 
 				      "dateCalcpageModify", "userCalcpageModify", 

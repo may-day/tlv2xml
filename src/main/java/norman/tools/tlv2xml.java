@@ -2,6 +2,7 @@ package norman.tools;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 
 import norman.tools.bm.LV;
 import norman.tools.bm.plugins.bm.BaumanFormatAdapter;
@@ -28,5 +29,16 @@ public class tlv2xml {
 			xbfa.write ( new FileOutputStream(args[1]), lv);
 		}
 	}
-
+	
+	public static void convert(InputStream xmlstream, String outfile) throws Exception {
+			LV lv = new LV();
+			BaumanFormatAdapter bfa = new BaumanFormatAdapter ( true, //skipJunk,
+					true, //read Text that has too many lines
+					true, //skipUnknownLineTypes,
+					true //useDummies
+			);
+			XMLBaumanFormatAdapter xbfa = new XMLBaumanFormatAdapter ();
+			bfa.read ( xmlstream, lv);
+			xbfa.write ( new FileOutputStream(outfile), lv);
+	}
 }

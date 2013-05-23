@@ -92,7 +92,7 @@ implements DocumentFormatAdapter
 			}
 
 		} catch (UnsupportedEncodingException ex) {
-			throw new BMFormatException ("Kein ISO-8859-1 auf diesem System vorhanden - wird ben�tight um .tlv Dateien zu lesen!");
+			throw new BMFormatException ("Kein ISO-8859-1 auf diesem System vorhanden - wird benötight um .tlv Dateien zu lesen!");
 		} catch (DocumentException ex) {
 			throw new BMFormatException (ex);
 		}
