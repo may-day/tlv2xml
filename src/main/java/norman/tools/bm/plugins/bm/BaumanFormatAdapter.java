@@ -8,6 +8,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import norman.tools.bm.DocumentException;
 import norman.tools.bm.DocumentPartException;
@@ -17,6 +20,89 @@ import norman.tools.bm.document.DocumentPart;
 import norman.tools.bm.document.PropertyMissingException;
 import norman.tools.bm.plugins.DocumentFormatAdapter;
 import norman.tools.bm.plugins.FormatAdapterException;
+
+class BaumanFormatVersion {
+	static Pattern markeridx = Pattern.compile("\\D*(\\d*)");
+	public String valid_for, valid_ql, valid_fieldname;
+	public int valid_fieldindex;
+	public HashMap<Pattern, String> qline_partname;
+	public HashMap<Pattern, String[]> qline_linedef;
+	public BaumanFormatVersion(BufferedReader def) throws IOException{
+		qline_partname= new HashMap<Pattern, String>();
+		qline_linedef= new HashMap<Pattern, String[]>();
+		valid_fieldindex=0;
+		String l;
+		while ((l=def.readLine())!=null){
+			if (l.startsWith("@VALID:")){
+				String parts[] = l.split(":",2)[1].split(",");
+				valid_for = parts[0];
+				valid_ql = parts[1];
+				valid_fieldname = parts[2];
+			}
+			else if (l.startsWith("!")){
+				String parts[] = l.split(":",2);
+				String partname = parts[0].substring(1);
+				for(String ql: parts[1].split(",")){
+					qline_partname.put(Pattern.compile(ql), partname);
+				}
+			}
+			else if (l.startsWith("#")){
+				String parts[] = l.split(",", 2);
+				String ql = parts[0];
+				if (parts.length>1){
+					parts = parts[1].split(",");
+					String what = ql.substring(1).toLowerCase().trim() + "_";
+					int unknown=1;
+					for(int i=0; i < parts.length; i++){
+						if (parts[i].equals("?")) parts[i] = "unknown_" + what + unknown++;
+					}
+				}else{
+					parts = new String[]{};
+				}
+				Pattern pat=Pattern.compile(ql);
+				qline_linedef.put(pat, parts);
+				if (pat.matcher(valid_ql).matches()){
+					valid_fieldindex=1;
+					for(String field:parts){
+						if (field.equals(valid_fieldname)){
+							break;
+						}
+						valid_fieldindex++;
+					}
+				}
+			}
+		}
+	}
+	String getPartname(String marker){
+		for(Pattern pat:qline_partname.keySet()){
+			if (pat.matcher(marker).matches()){
+				String partname= qline_partname.get(pat);
+				if (partname.contains("%1$")){
+					Matcher m = markeridx.matcher(marker);
+					boolean mm = m.matches();
+					String markernum=m.group(1);
+					if (markernum.length()>0){
+						Integer offset=0;
+						if (partname.startsWith("CALCPAGE.lg")) offset = 20;
+						return String.format(partname, Integer.valueOf(markernum) - offset);
+					}
+				}
+				return partname;
+			}
+		}
+		return null;
+	}
+	
+	String [] getLinedef(String marker){
+		
+		for(Pattern pat:qline_linedef.keySet()){
+			if (pat.matcher(marker).matches()){
+				return qline_linedef.get(pat);
+			}
+		}
+		return null;
+	}
+}
 
 public class BaumanFormatAdapter extends AbstractBaumanAdapter
 implements DocumentFormatAdapter
@@ -55,13 +141,23 @@ implements DocumentFormatAdapter
 	int expectShortTextLines;
 	String requestDocPart, requestField;
 	String lastOZ;
-
+	ArrayList<BaumanFormatVersion> bm_formats;
+	
 	public BaumanFormatAdapter(boolean skipJunk,
 			boolean appendTextTooMany,
 			boolean skipUnknownLineTypes, 
-			boolean useDummies
-	)
+				   boolean useDummies,
+				   String bm_versions[])
+	 throws IOException
 	{
+		bm_formats = new ArrayList<BaumanFormatVersion>();
+		for(String bm_version:bm_versions){
+			ClassLoader ctxldr = Thread.currentThread().getContextClassLoader();
+			InputStream defs = ctxldr.getResourceAsStream(bm_version);
+			BufferedReader br=new BufferedReader(new InputStreamReader(defs));
+			BaumanFormatVersion bmfv = new BaumanFormatVersion(br);
+			bm_formats.add(bmfv);
+		}
 		doSkipJunk = skipJunk;
 		doSkipUnknownLineTypes = skipUnknownLineTypes;
 		doUseDummies = useDummies;
@@ -78,7 +174,8 @@ implements DocumentFormatAdapter
 
 			lineCounter = 0;
 			lastCounter = infiniLoop = 0;
-
+			BaumanFormatVersion bmfv = null;
+			
 			while ((line = nextLine (reader)) != null)
 			{
 				if (!isQualifiedLine(line))
@@ -87,8 +184,9 @@ implements DocumentFormatAdapter
 					pushBack (line);
 					readUnqualifiedLines(reader);
 				}
-				else
-					doParse (line, reader, doc);
+				else{
+					bmfv = doParse (line, reader, doc, bmfv);
+				}
 			}
 
 		} catch (UnsupportedEncodingException ex) {
@@ -169,7 +267,7 @@ implements DocumentFormatAdapter
 			writeMemo (tbk, JBMDocumentNames.TEXT, tbkfields, writer, doc);
 			writeMemo (tfs, JBMDocumentNames.TEXT, tfsfields, writer, doc);
 			writePositions (JBMDocumentNames.POSITIONS, writer, doc);
-			writeln(X+LINESEPARATOR, writer); // und tsch�ss
+			writeln(X+LINESEPARATOR, writer); // und tschüss
 			writer.flush();
 		} catch (DocumentPartException e) {
 			System.err.println (requestDocPart + " was not found!");
@@ -177,7 +275,7 @@ implements DocumentFormatAdapter
 		} catch (PropertyMissingException e) {
 			System.err.println (requestDocPart + ": Property " + requestField + " was not found!");
 		} catch (UnsupportedEncodingException ex) {
-			throw new BMFormatException ("Kein ISO-8859-1 auf diesem System vorhanden - wird ben�tight um .tlv Dateien zu lesen!");
+			throw new BMFormatException ("Kein ISO-8859-1 auf diesem System vorhanden - wird benötigt um .tlv Dateien zu lesen!");
 		} catch (Exception e) {
 			throw new BMFormatException (e.toString());
 		}
@@ -289,7 +387,7 @@ implements DocumentFormatAdapter
 				} catch (PropertyMissingException ex) {}
 
 				textlen = shortTextLines.length-1 + longTextLines.length-1;
-				line = assembleLine ("#P"+kennung, fields, docpart, FIELDSEPARATOR, "", 2); // ohne textl�nge
+				line = assembleLine ("#P"+kennung, fields, docpart, FIELDSEPARATOR, "", 2); // ohne textlänge
 				line = line + (shortTextLines.length < 2 ? "" : ""+(shortTextLines.length-1)) + FIELDSEPARATOR;
 				line = line + (textlen == 0 ? "" : ""+textlen) + FIELDSEPARATOR + LINESEPARATOR;
 				writeln(line, writer);
@@ -332,191 +430,59 @@ implements DocumentFormatAdapter
 		pushBack(line);
 	}
 
-	private void doParse (String line, BufferedReader reader, DocumentPart doc)
+	private BaumanFormatVersion doParse (String line, BufferedReader reader, DocumentPart doc, BaumanFormatVersion bmfv)
 	throws BMFormatException, DocumentException
 	{
 		// splitte String, um den Marker zu extrahieren
 		String[] parts = line.split(FIELDSEPARATOR, -1);
 
+		if (bmfv == null){
+			for(BaumanFormatVersion v:bm_formats){
+				if (v.valid_ql.equals(parts[0])){
+					if (v.valid_for.equals(parts[v.valid_fieldindex])){
+						bmfv = v;
+						break;
+					}
+				}
+			}
+		}
+		if (bmfv == null){
+			throw new BMFormatException("No valid Baumanager Format Definition found!");
+		}
+		
 		// schauen wir mal, ob wir den Marker kennen
 		String marker = parts[0];
 		//	System.out.println ("checking marker "+marker);
 		//System.out.println ("line >" + lineCounter + "<");
-		if (marker.equals (k01)) {
-			// im 1. Feld finden wir die Versionsnummer
-			// anhand dieser bestimmen wir die Strukturen der anderen Zeilen
-			setupDocumentVersion (parts[1]);
-			parseLine (k01fields, JBMDocumentNames.HEADER, parts, reader, doc);
+		String partname = bmfv.getPartname(marker);
+		String fields[] = bmfv.getLinedef(marker);
+		
+		if (fields != null){
+			if (JBMDocumentNames.TEXT.equals(partname))
+				parseMemo (fields, JBMDocumentNames.TEXT, parts, reader, doc);
+			else if (JBMDocumentNames.POSITIONS.equals(partname))
+				parsePosition (fields, JBMDocumentNames.POSITIONS, parts, reader, doc);
+			else if ("POSITIONEXTENSIONS".equals(partname))
+				parseLine (fields, null, parts, reader, doc);
+			else if ("END".equals(partname)){
+				// the end is nigh
+			}
+			else if (partname != null)
+				parseLine (fields, partname, parts, reader, doc);
+			else if (marker.length() > 4) {
+				// wir sind wahrscheinlich im Text gelandet un der fängt zum Beispile mit einem #Format Zeichen an
+				System.out.println("leeching " + marker);
+				pushBack(line);
+				readUnqualifiedLines(reader);
+			}
+			else {
+				storeVerbatim (marker, "unrecognized", line, reader, doc);
+			}
+		}else{
+			// unrecognized line
+			throw new BMFormatException("unrecognized line:" + line);
 		}
-		else if (marker.equals (k02)) {
-			//showParts (k02fields, parts);
-			parseLine (k02fields, JBMDocumentNames.HEADER, parts, reader, doc);
-		}
-		else if (marker.equals (k03))
-			parseLine (k03fields, JBMDocumentNames.HEADER, parts, reader, doc);
-		else if (marker.equals (k04))
-			parseLine (k04fields, JBMDocumentNames.HEADER, parts, reader, doc);
-		else if (marker.equals (k05))
-			parseLine (k05fields, JBMDocumentNames.HEADER, parts, reader, doc);
-		else if (marker.equals (k06))
-			parseLine (k06fields, JBMDocumentNames.HEADER, parts, reader, doc);
-		else if (marker.equals (k07))
-			parseLine (k07fields, JBMDocumentNames.HEADER, parts, reader, doc);
-		else if (marker.equals (k08))
-			parseLine (k08fields, JBMDocumentNames.HEADER, parts, reader, doc);
-		else if (marker.equals (k09))
-			parseLine (k09fields, JBMDocumentNames.HEADER, parts, reader, doc);
-		else if (marker.equals (k10))
-			parseLine (k10fields, JBMDocumentNames.HEADER, parts, reader, doc);
-		else if (marker.equals (k11))
-			parseLine (k11fields, JBMDocumentNames.HEADER, parts, reader, doc);
-		else if (marker.equals (k12))
-			parseLine (k12fields, JBMDocumentNames.HEADER, parts, reader, doc);
-		else if (marker.equals (a1))
-		{
-			parseLine (a1fields, JBMDocumentNames.CALCPAGE, parts, reader, doc);
-		}
-		else if (marker.equals (a2))
-			parseLine (a2fields, JBMDocumentNames.CALCPAGE, parts, reader, doc);
-		else if (marker.equals (a3)) {
-			parseLine (a3fields, JBMDocumentNames.CALCPAGE, parts, reader, doc);
-		}else if (marker.equals (a4))
-			parseLine (a4fields, JBMDocumentNames.CALCPAGE, parts, reader, doc);
-		else if (marker.equals (a01))
-			parseLine (a01fields, JBMDocumentNames.CALCPAGE+".mg01", parts, reader, doc);
-		else if (marker.equals (a02))
-			parseLine (a02fields, JBMDocumentNames.CALCPAGE+".mg02", parts, reader, doc);
-		else if (marker.equals (a03))
-			parseLine (a03fields, JBMDocumentNames.CALCPAGE+".mg03", parts, reader, doc);
-		else if (marker.equals (a04))
-			parseLine (a04fields, JBMDocumentNames.CALCPAGE+".mg04", parts, reader, doc);
-		else if (marker.equals (a05))
-			parseLine (a05fields, JBMDocumentNames.CALCPAGE+".mg05", parts, reader, doc);
-		else if (marker.equals (a06))
-			parseLine (a06fields, JBMDocumentNames.CALCPAGE+".mg06", parts, reader, doc);
-		else if (marker.equals (a07))
-			parseLine (a07fields, JBMDocumentNames.CALCPAGE+".mg07", parts, reader, doc);
-		else if (marker.equals (a08))
-			parseLine (a08fields, JBMDocumentNames.CALCPAGE+".mg08", parts, reader, doc);
-		else if (marker.equals (a09))
-			parseLine (a09fields, JBMDocumentNames.CALCPAGE+".mg09", parts, reader, doc);
-		else if (marker.equals (a10))
-			parseLine (a10fields, JBMDocumentNames.CALCPAGE+".mg10", parts, reader, doc);
-		else if (marker.equals (a11))
-			parseLine (a11fields, JBMDocumentNames.CALCPAGE+".mg11", parts, reader, doc);
-		else if (marker.equals (a12))
-			parseLine (a12fields, JBMDocumentNames.CALCPAGE+".mg12", parts, reader, doc);
-		else if (marker.equals (a13))
-			parseLine (a13fields, JBMDocumentNames.CALCPAGE+".mg13", parts, reader, doc);
-		else if (marker.equals (a14))
-			parseLine (a14fields, JBMDocumentNames.CALCPAGE+".mg14", parts, reader, doc);
-		else if (marker.equals (a15))
-			parseLine (a15fields, JBMDocumentNames.CALCPAGE+".mg15", parts, reader, doc);
-		else if (marker.equals (a16))
-			parseLine (a16fields, JBMDocumentNames.CALCPAGE+".mg16", parts, reader, doc);
-		else if (marker.equals (a17))
-			parseLine (a17fields, JBMDocumentNames.CALCPAGE+".mg17", parts, reader, doc);
-		else if (marker.equals (a18))
-			parseLine (a18fields, JBMDocumentNames.CALCPAGE+".mg18", parts, reader, doc);
-		else if (marker.equals (a19))
-			parseLine (a19fields, JBMDocumentNames.CALCPAGE+".mg19", parts, reader, doc);
-		else if (marker.equals (a21))
-			parseLine (a21fields, JBMDocumentNames.CALCPAGE+".lg01", parts, reader, doc);
-		else if (marker.equals (a22))
-			parseLine (a22fields, JBMDocumentNames.CALCPAGE+".lg02", parts, reader, doc);
-		else if (marker.equals (a23))
-			parseLine (a23fields, JBMDocumentNames.CALCPAGE+".lg03", parts, reader, doc);
-		else if (marker.equals (a24))
-			parseLine (a24fields, JBMDocumentNames.CALCPAGE+".lg04", parts, reader, doc);
-		else if (marker.equals (a25))
-			parseLine (a25fields, JBMDocumentNames.CALCPAGE+".lg05", parts, reader, doc);
-		else if (marker.equals (a26))
-			parseLine (a26fields, JBMDocumentNames.CALCPAGE+".lg06", parts, reader, doc);
-		else if (marker.equals (a27))
-			parseLine (a27fields, JBMDocumentNames.CALCPAGE+".lg07", parts, reader, doc);
-		else if (marker.equals (a28))
-			parseLine (a28fields, JBMDocumentNames.CALCPAGE+".lg08", parts, reader, doc);
-		else if (marker.equals (a29))
-			parseLine (a29fields, JBMDocumentNames.CALCPAGE+".lg09", parts, reader, doc);
-		else if (marker.equals (a30))
-			parseLine (a30fields, JBMDocumentNames.CALCPAGE+".lg10", parts, reader, doc);
-		else if (marker.equals (a31))
-			parseLine (a31fields, JBMDocumentNames.CALCPAGE+".lg11", parts, reader, doc);
-		else if (marker.equals (a32))
-			parseLine (a32fields, JBMDocumentNames.CALCPAGE+".lg12", parts, reader, doc);
-		else if (marker.equals (a33))
-			parseLine (a33fields, JBMDocumentNames.CALCPAGE+".lg13", parts, reader, doc);
-		else if (marker.equals (a34))
-			parseLine (a34fields, JBMDocumentNames.CALCPAGE+".lg14", parts, reader, doc);
-		else if (marker.equals (a35))
-			parseLine (a35fields, JBMDocumentNames.CALCPAGE+".lg15", parts, reader, doc);
-		else if (marker.equals (a36))
-			parseLine (a36fields, JBMDocumentNames.CALCPAGE+".lg16", parts, reader, doc);
-		else if (marker.equals (a37))
-			parseLine (a37fields, JBMDocumentNames.CALCPAGE+".lg17", parts, reader, doc);
-		else if (marker.equals (a38))
-			parseLine (a38fields, JBMDocumentNames.CALCPAGE+".lg18", parts, reader, doc);
-		else if (marker.equals (a39))
-			parseLine (a39fields, JBMDocumentNames.CALCPAGE+".lg19", parts, reader, doc);
-		else if (marker.equals (tpx))
-			parseMemo (tpxfields, JBMDocumentNames.TEXT, parts, reader, doc);
-		else if (marker.equals (tt1))
-			parseMemo (tt1fields, JBMDocumentNames.TEXT, parts, reader, doc);
-		else if (marker.equals (tt2))
-			parseMemo (tt2fields, JBMDocumentNames.TEXT, parts, reader, doc);
-		else if (marker.equals (tt3))
-			parseMemo (tt3fields, JBMDocumentNames.TEXT, parts, reader, doc);
-		else if (marker.equals (tte))
-			parseMemo (ttefields, JBMDocumentNames.TEXT, parts, reader, doc);
-		else if (marker.equals (tbk))
-			parseMemo (tbkfields, JBMDocumentNames.TEXT, parts, reader, doc);
-		else if (marker.equals (tfs))
-			parseMemo (tfsfields, JBMDocumentNames.TEXT, parts, reader, doc);
-		else if (marker.equals (pp))
-			parsePosition (ppfields, JBMDocumentNames.POSITIONS, parts, reader, doc);
-		else if (marker.equals (pi))
-			parsePosition (pifields, JBMDocumentNames.POSITIONS, parts, reader, doc);
-		else if (marker.equals (pa))
-			parsePosition (pafields, JBMDocumentNames.POSITIONS, parts, reader, doc);
-		else if (marker.equals (pe))
-			parsePosition (pefields, JBMDocumentNames.POSITIONS, parts, reader, doc);
-		else if (marker.equals (pm))
-			parsePosition (pmfields, JBMDocumentNames.POSITIONS, parts, reader, doc);
-		else if (marker.equals (pu))
-			parsePosition (pufields, JBMDocumentNames.POSITIONS, parts, reader, doc);
-		else if (marker.equals (pq))
-			parsePosition (pqfields, JBMDocumentNames.POSITIONS, parts, reader, doc);
-		else if (marker.equals (pr))
-			parsePosition (prfields, JBMDocumentNames.POSITIONS, parts, reader, doc);
-		else if (marker.equals (ps))
-			parsePosition (psfields, JBMDocumentNames.POSITIONS, parts, reader, doc);
-		else if (marker.equals (pz))
-			parsePosition (pzfields, JBMDocumentNames.POSITIONS, parts, reader, doc);
-		else if (marker.equals (p1))
-			parsePosition (p1fields, JBMDocumentNames.POSITIONS, parts, reader, doc);
-		else if (marker.equals (p2))
-			parsePosition (p2fields, JBMDocumentNames.POSITIONS, parts, reader, doc);
-		else if (marker.equals (p3))
-			parsePosition (p3fields, JBMDocumentNames.POSITIONS, parts, reader, doc);
-		else if (marker.equals (p4))
-			parsePosition (p4fields, JBMDocumentNames.POSITIONS, parts, reader, doc);
-		else if (marker.equals (px))
-			parsePosition (pxfields, JBMDocumentNames.POSITIONS, parts, reader, doc);
-		else if (marker.equals (f1))
-			parseLine (f1fields, null, parts, reader, doc);
-		else if (marker.equals (f2))
-			parseLine (f2fields, null, parts, reader, doc);
-		else if (marker.length() > 4) {
-			// wir sind wahrscheinlich im Text gelandet un der f�ngt zum Beispile mit einem #Format Zeichen an
-			System.out.println("leeching " + marker);
-			pushBack(line);
-			readUnqualifiedLines(reader);
-		} else if (marker.equals (X)) {
-			// das Ende naht
-			;
-		} else {
-			storeVerbatim (marker, "unrecognized", line, reader, doc);
-		}
+		return bmfv;
 	}
 
 	private void setupDocumentVersion (String createdBy) {
@@ -556,7 +522,7 @@ implements DocumentFormatAdapter
 			for (i=0; i < fields.length; i++) {
 				docpart.putProperty (fields[i], 
 						parts[i+1], // 0.te ist marker
-						true, // lasse dirty state unver�ndert
+						true, // lasse dirty state unverändert
 						true); // Wert kam aud Datenstrom
 			}
 
@@ -566,8 +532,8 @@ implements DocumentFormatAdapter
 				for (; i < fields.length; i++) {
 					System.out.println("use dummy for " + fields[i]);
 					docpart.putProperty (fields[i], 
-							"",  // dem DocumentPart ist es �berlassen, ein sinnvollen defaultwert zu w�hlen
-							false, // lasse dirty state unver�ndert
+							"",  // dem DocumentPart ist es überlassen, ein sinnvollen defaultwert zu wählen
+							false, // lasse dirty state unverändert
 							false); // wert kommt nicht aus Datenstrom
 				}
 			}
@@ -609,8 +575,8 @@ implements DocumentFormatAdapter
 			if (doUseDummies) {
 				for (; i < fields.length; i++) {
 					docpart.putProperty (fields[i], 
-							null,  // dem DocumentPart ist es �berlassen, ein sinnvollen defaultwert zu w�hlen
-							false, // lasse dirty state unver�ndert
+							null,  // dem DocumentPart ist es überlassen, ein sinnvollen defaultwert zu wählen
+							false, // lasse dirty state unverändert
 							false); // wert kommt nicht aus Datenstrom
 				}
 			}
@@ -668,7 +634,7 @@ implements DocumentFormatAdapter
 			for (i=0; i < fields.length; i++) {
 				docpart.putProperty (fields[i], 
 						parts[i+1], // 0.te ist marker
-						true, // lasse dirty state unver�ndert
+						true, // lasse dirty state unverändert
 						true); // Wert kam aus Datenstrom
 			}
 			lastOZ = parts[2];
@@ -679,8 +645,8 @@ implements DocumentFormatAdapter
 				for (; i < fields.length; i++) {
 					System.out.println("use dummy for " + fields[i]);
 					docpart.putProperty (fields[i], 
-							null,  // dem DocumentPart ist es �berlassen, ein sinnvollen defaultwert zu w�hlen
-							false, // lasse dirty state unver�ndert
+							null,  // dem DocumentPart ist es überlassen, ein sinnvollen defaultwert zu wählen
+							false, // lasse dirty state unverändert
 							false); // wert kommt nicht aus Datenstrom
 				}
 			}
@@ -698,7 +664,7 @@ implements DocumentFormatAdapter
 			}
 		}
 
-		// checken wir mal, ob wir noch Texte erwarten d�rfen ...
+		// checken wir mal, ob wir noch Texte erwarten dürfen ...
 
 		int allTextLines = -1;
 		int shortTextLines = -1;

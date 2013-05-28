@@ -23,6 +23,7 @@ public class tlv2xml {
 					true, //read Text that has too many lines
 					true, //skipUnknownLineTypes,
 					true //useDummies
+					, new String[]{"norman/tools/bm/plugins/bm/bauman_v399.def"}
 			);
 			XMLBaumanFormatAdapter xbfa = new XMLBaumanFormatAdapter ();
 			bfa.read ( new FileInputStream (args[0]), lv);
@@ -36,6 +37,7 @@ public class tlv2xml {
 					true, //read Text that has too many lines
 					true, //skipUnknownLineTypes,
 					true //useDummies
+					, new String[]{"/norman/tools/bm/plugins/bm/bauman_v399.def"}
 			);
 			XMLBaumanFormatAdapter xbfa = new XMLBaumanFormatAdapter ();
 			bfa.read ( xmlstream, lv);
