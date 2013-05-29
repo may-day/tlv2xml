@@ -25,7 +25,7 @@ public class tlv2xml {
 					true //useDummies
 					, new String[]{"norman/tools/bm/plugins/bm/bauman_v399.def"}
 			);
-			XMLBaumanFormatAdapter xbfa = new XMLBaumanFormatAdapter ();
+			XMLBaumanFormatAdapter xbfa = new XMLBaumanFormatAdapter (new String[]{"norman/tools/bm/plugins/bm/bauman_v399.def"});
 			bfa.read ( new FileInputStream (args[0]), lv);
 			xbfa.write ( new FileOutputStream(args[1]), lv);
 		}
@@ -39,7 +39,7 @@ public class tlv2xml {
 					true //useDummies
 					, new String[]{"/norman/tools/bm/plugins/bm/bauman_v399.def"}
 			);
-			XMLBaumanFormatAdapter xbfa = new XMLBaumanFormatAdapter ();
+			XMLBaumanFormatAdapter xbfa = new XMLBaumanFormatAdapter (new String[]{"norman/tools/bm/plugins/bm/bauman_v399.def"});
 			bfa.read ( xmlstream, lv);
 			xbfa.write ( new FileOutputStream(outfile), lv);
 	}

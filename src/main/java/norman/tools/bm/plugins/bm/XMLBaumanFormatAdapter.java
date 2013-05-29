@@ -39,9 +39,9 @@ public class XMLBaumanFormatAdapter extends AbstractBaumanAdapter
 
     String requestDocPart, requestField;
 
-    public XMLBaumanFormatAdapter()
+    public XMLBaumanFormatAdapter(	String bm_versions[]) throws IOException
     {
-
+		super(bm_versions);
     }
 
     public void read(InputStream is, DocumentPart doc) throws FormatAdapterException
