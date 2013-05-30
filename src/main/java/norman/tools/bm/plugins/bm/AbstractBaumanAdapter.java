@@ -50,11 +50,6 @@ class BaumanFormatVersion {
 				String ql = parts[0];
 				if (parts.length>1){
 					parts = parts[1].split(",");
-					String what = ql.substring(1).toLowerCase().trim() + "_";
-					int unknown=1;
-					for(int i=0; i < parts.length; i++){
-						if (parts[i].equals("?")) parts[i] = "unknown_" + what + unknown++;
-					}
 				}else{
 					parts = new String[]{};
 				}
@@ -720,7 +715,7 @@ public abstract class AbstractBaumanAdapter {
 				      "addonNumber20", "addonValue20"};
 
     static final String X = "#X"; // Ende Marker
-    static final String DEFAULT_VERSION = "BauManWin V3.89";
+    static final String DEFAULT_VERSION = "BauManWin V3.99";
 
 	ArrayList<BaumanFormatVersion> bm_formats;
     
@@ -770,7 +765,7 @@ public abstract class AbstractBaumanAdapter {
 			} catch (PropertyMissingException e) {
 				System.err.println (ctx.requestDocPart + ": Property " + ctx.requestField + " was not found!");
 			} catch (Exception e) {
-				throw new BMFormatException (e.toString());
+				throw new BMFormatException (e);
 			}
 	}
 
@@ -825,7 +820,6 @@ public abstract class AbstractBaumanAdapter {
 		emitPositionlistStart(ctx);
 		DocumentPart dp = getDocPart (partName, ctx);
 		ArrayList<? extends AbstractDocumentPart> poslist = dp.getPartList(JBMDocumentNames.POSITIONLIST);
-		String line;
 
 		for (DocumentPart docpart : poslist )
 		{
