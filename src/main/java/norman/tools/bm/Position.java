@@ -21,6 +21,7 @@ public class Position extends JBMDocumentPart
 		"manufacturer",
 		"unit",
 		"circa",
+		"print_short_long",
 		"formfeed",
 		"marker",
 		"directSellingPrice",
@@ -72,6 +73,7 @@ public class Position extends JBMDocumentPart
 	StringBuffer manufacturer;
 	StringBuffer unit;
 	StringBuffer circa;
+	StringBuffer print_short_long;
 	StringBuffer formfeed;
 	StringBuffer marker;
 	StringBuffer directSellingPrice;
@@ -127,6 +129,7 @@ public class Position extends JBMDocumentPart
 		manufacturer = new StringBuffer();
 		unit = new StringBuffer();
 		circa = new StringBuffer();
+		print_short_long = new StringBuffer();
 		formfeed = new StringBuffer();
 		marker = new StringBuffer();
 		directSellingPrice = new StringBuffer();
@@ -178,6 +181,7 @@ public class Position extends JBMDocumentPart
 		putProperty ("manufacturer", new StringProperty (manufacturer, true, false));
 		putProperty ("unit", new StringProperty (unit, true, false));
 		putProperty ("circa", new StringProperty (circa, true, false));
+		putProperty ("print_short_long", new StringProperty (print_short_long, true, false));
 		putProperty ("formfeed", new StringProperty (formfeed, true, false));
 		putProperty ("marker", new StringProperty (marker, true, false));
 		putProperty ("directSellingPrice", new StringProperty (directSellingPrice, true, false));

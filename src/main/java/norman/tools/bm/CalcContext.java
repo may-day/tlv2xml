@@ -18,6 +18,7 @@ public class CalcContext extends JBMDocumentPart
 		"clientDiscount", 
 		"gross", 
 		"factorLimitMargin",
+		"mode_surcharge_discount",
 		"fixCostName1", "fixCost1",
 		"fixCostName2", "fixCost2",
 		"fixCostName3", "fixCost3",
@@ -44,6 +45,7 @@ public class CalcContext extends JBMDocumentPart
 	clientDiscount, 
 	gross, 
 	factorLimitMargin,
+	mode_surcharge_discount,
 	fixCostName1, fixCost1,
 	fixCostName2, fixCost2,
 	fixCostName3, fixCost3,
@@ -81,6 +83,7 @@ public class CalcContext extends JBMDocumentPart
 		clientDiscount = new StringBuffer(); 
 		gross = new StringBuffer(); 
 		factorLimitMargin = new StringBuffer();
+		mode_surcharge_discount = new StringBuffer();
 		fixCostName1 = new StringBuffer(); 
 		fixCost1 = new StringBuffer();
 		fixCostName2 = new StringBuffer(); 
@@ -128,6 +131,7 @@ public class CalcContext extends JBMDocumentPart
 		putProperty("clientDiscount", new StringProperty(clientDiscount, true, false));
 		putProperty("gross", new StringProperty(gross, true, false));
 		putProperty("factorLimitMargin", new StringProperty(factorLimitMargin, true, false));
+		putProperty("mode_surcharge_discount", new StringProperty(mode_surcharge_discount, true, false));
 		putProperty("fixCostName1", new StringProperty(fixCostName1, true, false));
 		putProperty("fixCost1", new StringProperty(fixCost1, true, false));
 		putProperty("fixCostName2", new StringProperty(fixCostName2, true, false));
