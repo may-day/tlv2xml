@@ -4,11 +4,11 @@
 !CALCPAGE.mg%1$02d:#A0[1-9],#A1[0-9]
 !CALCPAGE.wg%1$02d:#A2[1-9],#A3[0-9]
 !TEXT:#TPX,#TT1,#TT2,#TT3,#TTE,#TBK,#TFS
-!POSITIONS:#P(P|I|A|E|M|U|Q|R|S|X)
+!POSITIONS:#P(P|I|A|E|M|U|Q|R|S|X|1|2|3|4)
 !POSITIONEXTENSIONS:#F1,#F2
 !END:#X
 #K01,createdBy,bizarrePosCounter,unknown_1,keepPosText,lockStructure,currency,unknown_2,unknown_3,unknown_4,orderType,unknown_5,clientType,netCalc,ozMask,labelTitle1,labelTitle2,labelTitle3,labelTitle4,salesPriceYearTable,unknown_6,unknown_7
-#K02,proposalID,unknown_8,unknown_9,proposalName1,proposalName2
+#K02,proposalID,unknown_8,unknown_9,projectName1,projectName2
 #K03,constructionSiteLine1,constructionSiteLine2,constructionSiteLine3
 #K04,clientid,key1,key2,addressName1,addressName2,addressName3,addressStreet,addressCity,addressCountry,addressZipcode
 #K05,deliveryName1,deliveryName2,deliveryName3,deliveryStreet,deliveryCity,deliveryCountry,deliveryZipcode,MrMs,unknown_10,unknown_11

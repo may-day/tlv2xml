@@ -1,4 +1,4 @@
-@VALID:BauManWin V4.22,#K01,createdBy
+@VALID:BauManWin V4.52,#K01,createdBy
 !HEADER:#K.*
 !CALCPAGE:#A[1-4][ ]
 !CALCPAGE.mg%1$02d:#A0[1-9],#A1[0-9]

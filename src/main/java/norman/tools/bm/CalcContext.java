@@ -19,18 +19,23 @@ public class CalcContext extends JBMDocumentPart
 		"gross", 
 		"factorLimitMargin",
 		"mode_surcharge_discount",
-		"fixCostName1", "fixCost1",
-		"fixCostName2", "fixCost2",
-		"fixCostName3", "fixCost3",
-		"fixCostName4", "fixCost4",
-		"fixCostName5", "fixCost5",
-		"surchargeName1", "surchargeFactor1", "surchargeFactorProposal1",
-		"surchargeName2", "surchargeFactor2", "surchargeFactorProposal2",
-		"surchargeName3", "surchargeFactor3", "surchargeFactorProposal3",
-		"surchargeName4", "surchargeFactor4", "surchargeFactorProposal4",
-		"surchargeName5", "surchargeFactor5", "surchargeFactorProposal5",
-		"shippingAbsolute", "shippingFactor",
-		"handlingAbsolute", "handlingFactor",
+		"fixCostName1", "fixCost1", "calced_fixCost1_cost", "calced_fixCost1_revenue",
+		"fixCostName2", "fixCost2", "calced_fixCost2_cost", "calced_fixCost2_revenue",
+		"fixCostName3", "fixCost3", "calced_fixCost3_cost", "calced_fixCost3_revenue",
+		"fixCostName4", "fixCost4", "calced_fixCost4_cost", "calced_fixCost4_revenue",
+		"fixCostName5", "fixCost5", "calced_fixCost5_cost", "calced_fixCost5_revenue",
+		"surchargeName1", "surchargeFactor1", "surchargeFactorProposal1", "calced_surcharge1_cost", "calced_surcharge1_revenue",
+		"surchargeName2", "surchargeFactor2", "surchargeFactorProposal2", "calced_surcharge2_cost", "calced_surcharge2_revenue",
+		"surchargeName3", "surchargeFactor3", "surchargeFactorProposal3", "calced_surcharge3_cost", "calced_surcharge3_revenue",
+		"surchargeName4", "surchargeFactor4", "surchargeFactorProposal4", "calced_surcharge4_cost", "calced_surcharge4_revenue",
+		"surchargeName5", "surchargeFactor5", "surchargeFactorProposal5", "calced_surcharge5_cost", "calced_surcharge5_revenue",
+		"shippingName", "shippingAbsolute", "shippingFactor", "calced_shipping_cost", "calced_shipping_revenue",
+		"handlingName", "handlingAbsolute", "handlingFactor", "calced_handling_cost", "calced_handling_revenue",
+		"discountedName","calced_discounted_cost","calced_discounted_revenue",
+		"boqName","calced_all_cost,calced_all_revenue",
+		"calced_material_cost","calced_material_revenue",
+		"calced_wage_cost","calced_wage_revenue",
+
 		"unknown_a4_1", "unknown_a4_2", 
 		"unknown_a4_3", "unknown_a4_4",
 		"unknown_a4_5", "unknown_a4_6"};
@@ -46,18 +51,22 @@ public class CalcContext extends JBMDocumentPart
 	gross, 
 	factorLimitMargin,
 	mode_surcharge_discount,
-	fixCostName1, fixCost1,
-	fixCostName2, fixCost2,
-	fixCostName3, fixCost3,
-	fixCostName4, fixCost4,
-	fixCostName5, fixCost5,
-	surchargeName1, surchargeFactor1, surchargeFactorProposal1,
-	surchargeName2, surchargeFactor2, surchargeFactorProposal2,
-	surchargeName3, surchargeFactor3, surchargeFactorProposal3,
-	surchargeName4, surchargeFactor4, surchargeFactorProposal4,
-	surchargeName5, surchargeFactor5, surchargeFactorProposal5,
-	shippingAbsolute, shippingFactor,
-	handlingAbsolute, handlingFactor;    
+	fixCostName1, fixCost1, calced_fixCost1_cost, calced_fixCost1_revenue,
+	fixCostName2, fixCost2, calced_fixCost2_cost, calced_fixCost2_revenue,
+	fixCostName3, fixCost3, calced_fixCost3_cost, calced_fixCost3_revenue,
+	fixCostName4, fixCost4, calced_fixCost4_cost, calced_fixCost4_revenue,
+	fixCostName5, fixCost5, calced_fixCost5_cost, calced_fixCost5_revenue,
+	surchargeName1, surchargeFactor1, surchargeFactorProposal1, calced_surcharge1_cost, calced_surcharge1_revenue,
+	surchargeName2, surchargeFactor2, surchargeFactorProposal2, calced_surcharge2_cost, calced_surcharge2_revenue,
+	surchargeName3, surchargeFactor3, surchargeFactorProposal3, calced_surcharge3_cost, calced_surcharge3_revenue,
+	surchargeName4, surchargeFactor4, surchargeFactorProposal4, calced_surcharge4_cost, calced_surcharge4_revenue,
+	surchargeName5, surchargeFactor5, surchargeFactorProposal5, calced_surcharge5_cost, calced_surcharge5_revenue,
+	shippingName, shippingAbsolute, shippingFactor, calced_shipping_cost, calced_shipping_revenue,
+	handlingName, handlingAbsolute, handlingFactor, calced_handling_cost, calced_handling_revenue,    
+	discountedName,calced_discounted_cost,calced_discounted_revenue,
+	boqName,calced_all_cost,calced_all_revenue,
+	calced_material_cost,calced_material_revenue,
+	calced_wage_cost,calced_wage_revenue;
 
 	public HashMap<Integer, MaterialGroupCalcPage> mg = new HashMap<Integer, MaterialGroupCalcPage>();
 	public HashMap<Integer, WageGroupCalcPage> lg = new HashMap<Integer, WageGroupCalcPage>();
@@ -94,6 +103,32 @@ public class CalcContext extends JBMDocumentPart
 		fixCost4 = new StringBuffer();
 		fixCostName5 = new StringBuffer(); 
 		fixCost5 = new StringBuffer();
+		calced_fixCost1_cost = new StringBuffer();
+		calced_fixCost1_revenue = new StringBuffer();		
+		calced_fixCost2_cost = new StringBuffer();
+		calced_fixCost2_revenue = new StringBuffer();		
+		calced_fixCost3_cost = new StringBuffer();
+		calced_fixCost3_revenue = new StringBuffer();		
+		calced_fixCost4_cost = new StringBuffer();
+		calced_fixCost4_revenue = new StringBuffer();		
+		calced_fixCost5_cost = new StringBuffer();
+		calced_fixCost5_revenue = new StringBuffer();
+		calced_surcharge1_cost = new StringBuffer();
+		calced_surcharge1_revenue = new StringBuffer();
+		calced_surcharge2_cost = new StringBuffer();
+		calced_surcharge2_revenue = new StringBuffer();
+		calced_surcharge3_cost = new StringBuffer();
+		calced_surcharge3_revenue = new StringBuffer();
+		calced_surcharge4_cost = new StringBuffer();
+		calced_surcharge4_revenue = new StringBuffer();
+		calced_surcharge5_cost = new StringBuffer();
+		calced_surcharge5_revenue = new StringBuffer();
+		shippingName = new StringBuffer();
+		calced_shipping_cost = new StringBuffer();
+		calced_shipping_revenue = new StringBuffer();
+		handlingName = new StringBuffer();
+		calced_handling_cost = new StringBuffer();
+		calced_handling_revenue = new StringBuffer();
 		surchargeName1 = new StringBuffer(); 
 		surchargeFactor1 = new StringBuffer(); 
 		surchargeFactorProposal1 = new StringBuffer();
@@ -113,6 +148,16 @@ public class CalcContext extends JBMDocumentPart
 		shippingFactor = new StringBuffer();
 		handlingAbsolute = new StringBuffer(); 
 		handlingFactor = new StringBuffer();
+		discountedName = new StringBuffer();
+		calced_discounted_cost = new StringBuffer();
+		calced_discounted_revenue = new StringBuffer();
+		boqName = new StringBuffer();
+		calced_all_cost = new StringBuffer();
+		calced_all_revenue = new StringBuffer();
+		calced_material_cost = new StringBuffer();
+		calced_material_revenue = new StringBuffer();
+		calced_wage_cost = new StringBuffer();
+		calced_wage_revenue = new StringBuffer();
 
 
 		putProperty("calcpageNumber", new StringProperty(calcpageNumber, true, false));
@@ -142,6 +187,26 @@ public class CalcContext extends JBMDocumentPart
 		putProperty("fixCost4", new StringProperty(fixCost4, true, false));
 		putProperty("fixCostName5", new StringProperty(fixCostName5, true, false));
 		putProperty("fixCost5", new StringProperty(fixCost5, true, false));
+		putProperty("calced_fixCost1_cost", new StringProperty(calced_fixCost1_cost,  true, false));
+		putProperty("calced_fixCost1_revenue", new StringProperty(calced_fixCost1_revenue,  true, false));
+		putProperty("calced_fixCost2_cost", new StringProperty(calced_fixCost2_cost,  true, false));
+		putProperty("calced_fixCost2_revenue", new StringProperty(calced_fixCost2_revenue,  true, false));
+		putProperty("calced_fixCost3_cost", new StringProperty(calced_fixCost3_cost,  true, false));
+		putProperty("calced_fixCost3_revenue", new StringProperty(calced_fixCost3_revenue,  true, false));
+		putProperty("calced_fixCost4_cost", new StringProperty(calced_fixCost4_cost,  true, false));
+		putProperty("calced_fixCost4_revenue", new StringProperty(calced_fixCost4_revenue,  true, false));
+		putProperty("calced_fixCost5_cost", new StringProperty(calced_fixCost5_cost,  true, false));
+		putProperty("calced_fixCost5_revenue", new StringProperty(calced_fixCost5_revenue,  true, false));
+		putProperty("calced_surcharge1_cost", new StringProperty(calced_surcharge1_cost,  true, false));
+		putProperty("calced_surcharge1_revenue", new StringProperty(calced_surcharge1_revenue,  true, false));
+		putProperty("calced_surcharge2_cost", new StringProperty(calced_surcharge2_cost,  true, false));
+		putProperty("calced_surcharge2_revenue", new StringProperty(calced_surcharge2_revenue,  true, false));
+		putProperty("calced_surcharge3_cost", new StringProperty(calced_surcharge3_cost,  true, false));
+		putProperty("calced_surcharge3_revenue", new StringProperty(calced_surcharge3_revenue,  true, false));
+		putProperty("calced_surcharge4_cost", new StringProperty(calced_surcharge4_cost,  true, false));
+		putProperty("calced_surcharge4_revenue", new StringProperty(calced_surcharge4_revenue,  true, false));
+		putProperty("calced_surcharge5_cost", new StringProperty(calced_surcharge5_cost,  true, false));
+		putProperty("calced_surcharge5_revenue", new StringProperty(calced_surcharge5_revenue,  true, false));
 		putProperty("surchargeName1", new StringProperty(surchargeName1, true, false));
 		putProperty("surchargeFactor1", new StringProperty(surchargeFactor1, true, false));
 		putProperty("surchargeFactorProposal1", new StringProperty(surchargeFactorProposal1, true, false));
@@ -157,10 +222,26 @@ public class CalcContext extends JBMDocumentPart
 		putProperty("surchargeName5", new StringProperty(surchargeName5, true, false));
 		putProperty("surchargeFactor5", new StringProperty(surchargeFactor5, true, false));
 		putProperty("surchargeFactorProposal5", new StringProperty(surchargeFactorProposal5, true, false));
+		putProperty("shippingName", new StringProperty(shippingName,  true, false));
+		putProperty("handlingName", new StringProperty(handlingName,  true, false));
+		putProperty("calced_shipping_cost", new StringProperty(calced_shipping_cost,  true, false));
+		putProperty("calced_shipping_revenue", new StringProperty(calced_shipping_revenue,  true, false));
+		putProperty("calced_handling_cost", new StringProperty(calced_handling_cost,  true, false));
+		putProperty("calced_handling_revenue", new StringProperty(calced_handling_revenue,  true, false));
 		putProperty("shippingAbsolute", new StringProperty(shippingAbsolute, true, false));
 		putProperty("shippingFactor", new StringProperty(shippingFactor, true, false));
 		putProperty("handlingAbsolute", new StringProperty(handlingAbsolute, true, false));
 		putProperty("handlingFactor", new StringProperty(handlingFactor, true, false));
+		putProperty("discountedName", new StringProperty(discountedName, true, false));
+		putProperty("calced_discounted_cost", new StringProperty(calced_discounted_cost, true, false));
+		putProperty("calced_discounted_revenue", new StringProperty(calced_discounted_revenue, true, false));
+		putProperty("boqName", new StringProperty(boqName, true, false));
+		putProperty("calced_all_cost", new StringProperty(calced_all_cost, true, false));
+		putProperty("calced_all_revenue", new StringProperty(calced_all_revenue, true, false));
+		putProperty("calced_material_cost", new StringProperty(calced_material_cost, true, false));
+		putProperty("calced_material_revenue", new StringProperty(calced_material_revenue, true, false));
+		putProperty("calced_wage_cost", new StringProperty(calced_wage_cost, true, false));
+		putProperty("calced_wage_revenue", new StringProperty(calced_wage_revenue, true, false));
 
 		NumberFormat formatter = new DecimalFormat("00");
 		for (int i=1; i < 20; i++){

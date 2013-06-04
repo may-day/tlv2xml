@@ -10,6 +10,22 @@ import norman.tools.bm.plugins.bm.XMLBaumanFormatAdapter;
 
 public class tlv2xml {
 
+	public static String [] knownVersions = new String[]{
+			"norman/tools/bm/plugins/bm/bauman_v399.def"
+			,"norman/tools/bm/plugins/bm/bauman_v404.def"
+			,"norman/tools/bm/plugins/bm/bauman_v410.def"
+			,"norman/tools/bm/plugins/bm/bauman_v412.def"
+			,"norman/tools/bm/plugins/bm/bauman_v421.def"
+			,"norman/tools/bm/plugins/bm/bauman_v422.def"
+			,"norman/tools/bm/plugins/bm/bauman_v450.def"
+			,"norman/tools/bm/plugins/bm/bauman_v452.def"
+			,"norman/tools/bm/plugins/bm/bauman_v460.def"
+			,"norman/tools/bm/plugins/bm/bauman_v470.def"
+			,"norman/tools/bm/plugins/bm/bauman_v472.def"
+			,"norman/tools/bm/plugins/bm/bauman_v474.def"
+			,"norman/tools/bm/plugins/bm/bauman_v480.def"
+			,"norman/tools/bm/plugins/bm/bauman_v482.def"
+	};
 	/**
 	 * @param args
 	 * @throws Exception 
@@ -23,9 +39,9 @@ public class tlv2xml {
 					true, //read Text that has too many lines
 					true, //skipUnknownLineTypes,
 					true //useDummies
-					, new String[]{"norman/tools/bm/plugins/bm/bauman_v399.def"}
+					, knownVersions
 			);
-			XMLBaumanFormatAdapter xbfa = new XMLBaumanFormatAdapter (new String[]{"norman/tools/bm/plugins/bm/bauman_v399.def"});
+			XMLBaumanFormatAdapter xbfa = new XMLBaumanFormatAdapter (knownVersions);
 			bfa.read ( new FileInputStream (args[0]), lv);
 			xbfa.write ( new FileOutputStream(args[1]), lv);
 		}
@@ -37,9 +53,9 @@ public class tlv2xml {
 					true, //read Text that has too many lines
 					true, //skipUnknownLineTypes,
 					true //useDummies
-					, new String[]{"/norman/tools/bm/plugins/bm/bauman_v399.def"}
+					, knownVersions
 			);
-			XMLBaumanFormatAdapter xbfa = new XMLBaumanFormatAdapter (new String[]{"norman/tools/bm/plugins/bm/bauman_v399.def"});
+			XMLBaumanFormatAdapter xbfa = new XMLBaumanFormatAdapter (knownVersions);
 			bfa.read ( xmlstream, lv);
 			xbfa.write ( new FileOutputStream(outfile), lv);
 	}
