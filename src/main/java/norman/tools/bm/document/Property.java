@@ -2,7 +2,6 @@ package norman.tools.bm.document;
 
 public interface Property
 {
-    Object getValue();
-    boolean isDirty();
-    boolean isFromSource ();
+    String getValue();
+    void setValue(String value);
 }

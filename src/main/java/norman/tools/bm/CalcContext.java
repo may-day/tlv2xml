@@ -5,6 +5,8 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.HashMap;
 
+import norman.tools.bm.document.DocumentPartMissingException;
+
 public class CalcContext extends JBMDocumentPart
 {
 	static final String[] knownFields = {
@@ -40,40 +42,32 @@ public class CalcContext extends JBMDocumentPart
 		"unknown_a4_3", "unknown_a4_4",
 		"unknown_a4_5", "unknown_a4_6"};
 
-	StringBuffer calcpageNumber, 
-	dateCalcpageModify, userCalcpageModify, 
-	calcPageName, mgFact3isSurchargeDiscount,
-	BOQfinalFactor, 
-	discountAll, discountMaterial, discountWage, 
-	discountSpecial, 
-	factorAll, factorMaterial, factorWage, 
-	clientDiscount, 
-	gross, 
-	factorLimitMargin,
-	mode_surcharge_discount,
-	fixCostName1, fixCost1, calced_fixCost1_cost, calced_fixCost1_revenue,
-	fixCostName2, fixCost2, calced_fixCost2_cost, calced_fixCost2_revenue,
-	fixCostName3, fixCost3, calced_fixCost3_cost, calced_fixCost3_revenue,
-	fixCostName4, fixCost4, calced_fixCost4_cost, calced_fixCost4_revenue,
-	fixCostName5, fixCost5, calced_fixCost5_cost, calced_fixCost5_revenue,
-	surchargeName1, surchargeFactor1, surchargeFactorProposal1, calced_surcharge1_cost, calced_surcharge1_revenue,
-	surchargeName2, surchargeFactor2, surchargeFactorProposal2, calced_surcharge2_cost, calced_surcharge2_revenue,
-	surchargeName3, surchargeFactor3, surchargeFactorProposal3, calced_surcharge3_cost, calced_surcharge3_revenue,
-	surchargeName4, surchargeFactor4, surchargeFactorProposal4, calced_surcharge4_cost, calced_surcharge4_revenue,
-	surchargeName5, surchargeFactor5, surchargeFactorProposal5, calced_surcharge5_cost, calced_surcharge5_revenue,
-	shippingName, shippingAbsolute, shippingFactor, calced_shipping_cost, calced_shipping_revenue,
-	handlingName, handlingAbsolute, handlingFactor, calced_handling_cost, calced_handling_revenue,    
-	discountedName,calced_discounted_cost,calced_discounted_revenue,
-	boqName,calced_all_cost,calced_all_revenue,
-	calced_material_cost,calced_material_revenue,
-	calced_wage_cost,calced_wage_revenue;
+	StringProperty calcpageNumber, dateCalcpageModify, userCalcpageModify, calcPageName;
+	DecimalProperty mgFact3isSurchargeDiscount,	BOQfinalFactor,	discountAll, discountMaterial, discountWage, discountSpecial, factorAll, factorMaterial, factorWage, clientDiscount, gross,	factorLimitMargin;
+	StringProperty mode_surcharge_discount;
+	StringProperty fixCostName1; DecimalProperty fixCost1, calced_fixCost1_cost, calced_fixCost1_revenue;
+	StringProperty fixCostName2; DecimalProperty fixCost2, calced_fixCost2_cost, calced_fixCost2_revenue;
+	StringProperty fixCostName3; DecimalProperty fixCost3, calced_fixCost3_cost, calced_fixCost3_revenue;
+	StringProperty fixCostName4; DecimalProperty fixCost4, calced_fixCost4_cost, calced_fixCost4_revenue;
+	StringProperty fixCostName5; DecimalProperty fixCost5, calced_fixCost5_cost, calced_fixCost5_revenue;
+	StringProperty surchargeName1; DecimalProperty surchargeFactor1, surchargeFactorProposal1, calced_surcharge1_cost, calced_surcharge1_revenue;
+	StringProperty surchargeName2; DecimalProperty surchargeFactor2, surchargeFactorProposal2, calced_surcharge2_cost, calced_surcharge2_revenue;
+	StringProperty surchargeName3; DecimalProperty surchargeFactor3, surchargeFactorProposal3, calced_surcharge3_cost, calced_surcharge3_revenue;
+	StringProperty surchargeName4; DecimalProperty surchargeFactor4, surchargeFactorProposal4, calced_surcharge4_cost, calced_surcharge4_revenue;
+	StringProperty surchargeName5; DecimalProperty surchargeFactor5, surchargeFactorProposal5, calced_surcharge5_cost, calced_surcharge5_revenue;
+	StringProperty shippingName; DecimalProperty shippingAbsolute, shippingFactor, calced_shipping_cost, calced_shipping_revenue;
+	StringProperty handlingName; DecimalProperty handlingAbsolute, handlingFactor, calced_handling_cost, calced_handling_revenue;    
+	StringProperty discountedName; DecimalProperty calced_discounted_cost,calced_discounted_revenue;
+	StringProperty boqName; DecimalProperty calced_all_cost,calced_all_revenue;
+	DecimalProperty calced_material_cost,calced_material_revenue;
+	DecimalProperty calced_wage_cost,calced_wage_revenue;
 
 	public HashMap<Integer, MaterialGroupCalcPage> mg = new HashMap<Integer, MaterialGroupCalcPage>();
 	public HashMap<Integer, WageGroupCalcPage> lg = new HashMap<Integer, WageGroupCalcPage>();
 	DefaultMaterialGroupCalcPage defaultMG; 
 	DefaultWageGroupCalcPage defaultWG; 
 
-	public CalcContext() throws DocumentException
+	public CalcContext() throws DocumentPartMissingException 
 	{
 		super();
 		calcpageNumber = new StringBuffer(); 
@@ -255,7 +249,7 @@ public class CalcContext extends JBMDocumentPart
 		
 	}    
 
-	public JBMDocumentPart createDocumentPart (String kind) throws DocumentException{
+	public JBMDocumentPart createDocumentPart (String kind){
 		if (kind.startsWith("mg")){
 			return new MaterialGroupCalcPage();
 		}else if (kind.startsWith("lg")){

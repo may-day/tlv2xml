@@ -14,4 +14,8 @@ public class FormatAdapterException extends Exception
     public FormatAdapterException(Throwable t) {
     	super (t);
         }
+
+    public FormatAdapterException(String message, Throwable t) {
+    	super (message, t);
+        }
 }

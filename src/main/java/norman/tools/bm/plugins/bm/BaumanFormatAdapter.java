@@ -264,7 +264,7 @@ implements DocumentFormatAdapter
 			// hier kommen wir hin, falls wir zu wenig felder in parts haben
 			if (doUseDummies) {
 				for (; i < fields.length; i++) {
-					System.out.println("use dummy for " + fields[i]);
+					//System.out.println("use dummy for " + fields[i]);
 					docpart.putProperty (fields[i], 
 							"",  // dem DocumentPart ist es überlassen, ein sinnvollen defaultwert zu wählen
 							false, // lasse dirty state unverändert
@@ -282,7 +282,7 @@ implements DocumentFormatAdapter
 
 			for (; i+1 < parts.length-1; i++) {
 				cruft.putProperty ("srcField"+(i+1), parts[i+1], true, true);
-				System.out.println("adding cruft:>"+parts[i+1]+"<");
+				//System.out.println("adding cruft:>"+parts[i+1]+"<");
 			}
 		}
 	}
@@ -394,7 +394,7 @@ implements DocumentFormatAdapter
 
 			for (; i+1 < parts.length-1; i++) {
 				cruft.putProperty ("srcField"+(i+1), parts[i+1], true, true); 
-				System.out.println("adding cruft:>"+parts[i+1]+"< at oz:"+ctx.lastOZ);
+				//System.out.println("adding cruft:>"+parts[i+1]+"< at oz:"+ctx.lastOZ);
 			}
 		}
 

@@ -1,6 +1,8 @@
 package norman.tools.bm.document;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import norman.tools.bm.DocumentException;
 
@@ -15,14 +17,16 @@ import norman.tools.bm.DocumentException;
  *    DocumentPart{
  *    }
  */
-public interface DocumentPart
+public interface DocumentPart<DOCPART>
 {
-	DocumentPart getPart (String name) throws DocumentException;
-	DocumentPart addPart (String name) throws DocumentException;
+	DOCPART getPart (String name) throws DocumentPartMissingException;
+	DOCPART addPart (String name) throws DocumentPartMissingException;
 	
-	ArrayList<? extends AbstractDocumentPart> getPartList (String name) throws DocumentException;
-	ArrayList<? extends AbstractDocumentPart> addPartList (String name);
-	DocumentPart addPartToList(String listName, String partKind) throws DocumentException;
+	ArrayList<DOCPART> getPartList (String name) throws DocumentPartMissingException;
+	ArrayList<DOCPART> addPartList (String name);
+	DOCPART addPartToList(String listName, String partKind) throws DocumentPartMissingException;
+	Iterator<DOCPART> getContainedParts();
+	Iterator<ArrayList<DOCPART>> getContainedPartLists();
 	
     Property getProperty (String name) throws DocumentException;
     // wasNotInSourceDoc .. a format adapter expected a certain value from its source, but there was no data

@@ -16,4 +16,8 @@ public class BMFormatException extends FormatAdapterException
     public BMFormatException(Throwable t) {
     	super (t);
     }
+
+    public BMFormatException(String message, Throwable t) {
+    	super (message, t);
+    }
 }
