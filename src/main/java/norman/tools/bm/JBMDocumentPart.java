@@ -86,6 +86,8 @@ public class JBMDocumentPart extends AbstractDocumentPart
 			return new CalcContext();
 	    }else if (kind.equals(JBMDocumentNames.POSITION)){
 			return new Position();
+	    }else if (kind.equals(JBMDocumentNames.HEADER)){
+			return new Basedata();
 	    }
 		return new JBMDocumentPart();
 	}

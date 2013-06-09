@@ -59,7 +59,41 @@ public class Position extends JBMDocumentPart
 		"hours",
 		"calculatedmaterialprice",
 		"calculatedwageprice",
-	"shortText"};
+		"shortText",
+		
+		"materialUnitprice_wo_addons",
+		"materialPurchasePrice_ignored",
+		"materialUnitPrice_ignored",
+		"wageUnitprice_wo_addons",
+		"wageUnitprice1_wo_addons",
+		"wageUnitprice2_wo_addons",
+		"wageUnitprice3_wo_addons",
+		"wageUnitprice4_wo_addons",
+		"wageUnitprice5_wo_addons",
+		"wagePurchaseCost_reverseCalced",
+		"wageUnitprice",
+		"addonNumber1",	"addonValue1",
+		"addonNumber2",	"addonValue2",
+		"addonNumber3",	"addonValue3",
+		"addonNumber4",	"addonValue4",
+		"addonNumber5",	"addonValue5",
+		"addonNumber6",	"addonValue6",
+		"addonNumber7",	"addonValue7",
+		"addonNumber8","addonValue8",
+		"addonNumber9","addonValue9",
+		"addonNumber10","addonValue10",
+		"addonNumber11","addonValue11",
+		"addonNumber12","addonValue12",
+		"addonNumber13","addonValue13",
+		"addonNumber14","addonValue14",
+		"addonNumber15","addonValue15",
+		"addonNumber16","addonValue16",
+		"addonNumber17","addonValue17",
+		"addonNumber18","addonValue18",
+		"addonNumber19","addonValue19",
+		"addonNumber20","addonValue20"
+	
+	};
 
 	StringBuffer rowheader;
 	StringBuffer poskind;
@@ -112,6 +146,37 @@ public class Position extends JBMDocumentPart
 	StringBuffer calculatedmaterialprice;
 	StringBuffer calculatedwageprice;
 	StringBuffer shortText;
+	StringBuffer materialUnitprice_wo_addons,
+	materialPurchasePrice_ignored,
+	materialUnitPrice_ignored,
+	wageUnitprice_wo_addons,
+	wageUnitprice1_wo_addons,
+	wageUnitprice2_wo_addons,
+	wageUnitprice3_wo_addons,
+	wageUnitprice4_wo_addons,
+	wageUnitprice5_wo_addons,
+	wagePurchaseCost_reverseCalced,
+	wageUnitprice,
+	addonNumber1,	addonValue1,
+	addonNumber2,	addonValue2,
+	addonNumber3,	addonValue3,
+	addonNumber4,	addonValue4,
+	addonNumber5,	addonValue5,
+	addonNumber6,	addonValue6,
+	addonNumber7,	addonValue7,
+	addonNumber8,addonValue8,
+	addonNumber9,addonValue9,
+	addonNumber10,addonValue10,
+	addonNumber11,addonValue11,
+	addonNumber12,addonValue12,
+	addonNumber13,addonValue13,
+	addonNumber14,addonValue14,
+	addonNumber15,addonValue15,
+	addonNumber16,addonValue16,
+	addonNumber17,addonValue17,
+	addonNumber18,addonValue18,
+	addonNumber19,addonValue19,
+	addonNumber20,addonValue20;
 
 
 	public Position ()
@@ -168,7 +233,59 @@ public class Position extends JBMDocumentPart
 		calculatedmaterialprice = new StringBuffer();
 		calculatedwageprice = new StringBuffer();
 		shortText = new StringBuffer();
-
+		
+		materialUnitprice_wo_addons = new StringBuffer();
+		materialPurchasePrice_ignored = new StringBuffer();
+		materialUnitPrice_ignored = new StringBuffer();
+		wageUnitprice_wo_addons = new StringBuffer();
+		wageUnitprice1_wo_addons = new StringBuffer();
+		wageUnitprice2_wo_addons = new StringBuffer();
+		wageUnitprice3_wo_addons = new StringBuffer();
+		wageUnitprice4_wo_addons = new StringBuffer();
+		wageUnitprice5_wo_addons = new StringBuffer();
+		wagePurchaseCost_reverseCalced = new StringBuffer();
+		wageUnitprice = new StringBuffer();
+		addonNumber1 = new StringBuffer();
+		addonValue1 = new StringBuffer();
+		addonNumber2 = new StringBuffer();
+		addonValue2 = new StringBuffer();
+		addonNumber3 = new StringBuffer();
+		addonValue3 = new StringBuffer();
+		addonNumber4 = new StringBuffer();
+		addonValue4 = new StringBuffer();
+		addonNumber5 = new StringBuffer();
+		addonValue5 = new StringBuffer();
+		addonNumber6 = new StringBuffer();
+		addonValue6 = new StringBuffer();
+		addonNumber7 = new StringBuffer();
+		addonValue7 = new StringBuffer();
+		addonNumber8 = new StringBuffer();
+		addonValue8 = new StringBuffer();
+		addonNumber9 = new StringBuffer();
+		addonValue9 = new StringBuffer();
+		addonNumber10 = new StringBuffer();
+		addonValue10 = new StringBuffer();
+		addonNumber11 = new StringBuffer();
+		addonValue11 = new StringBuffer();
+		addonNumber12 = new StringBuffer();
+		addonValue12 = new StringBuffer();
+		addonNumber13 = new StringBuffer();
+		addonValue13 = new StringBuffer();
+		addonNumber14 = new StringBuffer();
+		addonValue14 = new StringBuffer();
+		addonNumber15 = new StringBuffer();
+		addonValue15 = new StringBuffer();
+		addonNumber16 = new StringBuffer();
+		addonValue16 = new StringBuffer();
+		addonNumber17 = new StringBuffer();
+		addonValue17 = new StringBuffer();
+		addonNumber18 = new StringBuffer();
+		addonValue18 = new StringBuffer();
+		addonNumber19 = new StringBuffer();
+		addonValue19 = new StringBuffer();
+		addonNumber20 = new StringBuffer();
+		addonValue20 = new StringBuffer();
+		
 		putProperty ("rowheader", new StringProperty (rowheader, true, false));
 		putProperty ("poskind", new StringProperty (poskind, true, false));
 		putProperty ("oz", new StringProperty (oz, true, false));
@@ -220,7 +337,70 @@ public class Position extends JBMDocumentPart
 		putProperty ("calculatedmaterialprice", new StringProperty (calculatedmaterialprice, true, false));
 		putProperty ("calculatedwageprice", new StringProperty (calculatedwageprice, true, false));
 		putProperty ("shortText", new StringProperty (shortText, true, false));
+		
+		putProperty ("materialUnitprice_wo_addons", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("materialPurchasePrice_ignored", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("materialUnitPrice_ignored", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("wageUnitprice_wo_addons", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("wageUnitprice1_wo_addons", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("wageUnitprice2_wo_addons", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("wageUnitprice3_wo_addons", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("wageUnitprice4_wo_addons", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("wageUnitprice5_wo_addons", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("wagePurchaseCost_reverseCalced", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("wageUnitprice", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonNumber1", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonValue1", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonNumber2", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonValue2", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonNumber3", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonValue3", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonNumber4", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonValue4", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonNumber5", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonValue5", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonNumber6", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonValue6", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonNumber7", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonValue7", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonNumber8", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonValue8", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonNumber9", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonValue9", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonNumber10", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonValue10", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonNumber11", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonValue11", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonNumber12", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonValue12", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonNumber13", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonValue13", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonNumber14", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonValue14", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonNumber15", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonValue15", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonNumber16", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonValue16", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonNumber17", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonValue17", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonNumber18", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonValue18", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonNumber19", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonValue19", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonNumber20", new StringProperty( new StringBuffer(), true, false));
+		putProperty ("addonValue20", new StringProperty( new StringBuffer(), true, false));
 
+		putProperty ("unknown_1", new StringProperty (new StringBuffer(), true, false));
+		putProperty ("unknown_2", new StringProperty (new StringBuffer(), true, false));
+		putProperty ("unknown_3", new StringProperty (new StringBuffer(), true, false));
+		putProperty ("unknown_4", new StringProperty (new StringBuffer(), true, false));
+		putProperty ("unknown_5", new StringProperty (new StringBuffer(), true, false));
+		putProperty ("unknown_6", new StringProperty (new StringBuffer(), true, false));
+		putProperty ("unknown_7", new StringProperty (new StringBuffer(), true, false));
+		putProperty ("unknown_8", new StringProperty (new StringBuffer(), true, false));
+		putProperty ("unknown_9", new StringProperty (new StringBuffer(), true, false));
+		putProperty ("unknown_10", new StringProperty (new StringBuffer(), true, false));
+		
 	}
 
 	public String toString(){ return "[POSITION]"; }

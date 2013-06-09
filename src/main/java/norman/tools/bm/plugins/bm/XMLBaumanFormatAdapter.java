@@ -34,8 +34,8 @@ import org.w3c.dom.ProcessingInstruction;
 
 class XMLParseContext extends ParseContext{
 	public Element root, header, calcpage, wg, mg, text, positions, current, currentpos;
-	public XMLParseContext(DocumentPart doc){
-		super(doc, null, null);
+	public XMLParseContext(ArrayList<BaumanFormatVersion> bmversions, DocumentPart doc){
+		super(bmversions,doc, null, null);
 		root = header = calcpage = wg = mg = text = positions = current = currentpos = null;
 	}
 
@@ -134,7 +134,7 @@ public class XMLBaumanFormatAdapter extends AbstractBaumanAdapter
 	
     public void write(java.io.OutputStream os, DocumentPart doc) throws Exception
     {
-        XMLParseContext xmlctx = new XMLParseContext(doc);
+        XMLParseContext xmlctx = new XMLParseContext(bm_formats, doc);
         write(doc, xmlctx);
     	
         // Prepare the DOM document for writing

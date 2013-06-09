@@ -2,7 +2,9 @@ package norman.tools;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import norman.tools.bm.LV;
 import norman.tools.bm.plugins.bm.BaumanFormatAdapter;
@@ -43,7 +45,16 @@ public class tlv2xml {
 			);
 			XMLBaumanFormatAdapter xbfa = new XMLBaumanFormatAdapter (knownVersions);
 			bfa.read ( new FileInputStream (args[0]), lv);
-			xbfa.write ( new FileOutputStream(args[1]), lv);
+			if ("/dev/null".equals(args[1]))
+			{
+				
+				xbfa.write ( new OutputStream() {
+				    public void write(int i) throws IOException {
+				    }
+				}, lv);
+				
+			}else
+				xbfa.write ( new FileOutputStream(args[1]), lv);
 		}
 	}
 	
@@ -57,6 +68,14 @@ public class tlv2xml {
 			);
 			XMLBaumanFormatAdapter xbfa = new XMLBaumanFormatAdapter (knownVersions);
 			bfa.read ( xmlstream, lv);
+			if ("/dev/null".equals(outfile))
+			{
+				
+				xbfa.write ( new OutputStream() {
+				    public void write(int i) throws IOException {
+				    }
+				}, lv);
+			}else
 			xbfa.write ( new FileOutputStream(outfile), lv);
 	}
 }

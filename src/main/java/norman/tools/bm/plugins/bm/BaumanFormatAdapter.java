@@ -70,13 +70,13 @@ implements DocumentFormatAdapter
 	{
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(is, "ISO-8859-1"));
-			ParseContext ctx = new ParseContext(doc, reader);
+			ParseContext ctx = new ParseContext(bm_formats, doc, reader);
 			
 			String line;
 
 			while ((line = ctx.nextLine()) != null)
 			{
-				if (!isQualifiedLine(line))
+				if (!isQualifiedLine(line, ctx))
 				{
 					// entweder junk oder wir sind gerade in einem (mehrzeiligen) Text
 					ctx.pushBack (line);
@@ -101,7 +101,7 @@ implements DocumentFormatAdapter
 		BufferedWriter writer;
 		try {
 			writer = new BufferedWriter(new OutputStreamWriter(os, "ISO-8859-1"));
-			ParseContext ctx = new ParseContext(doc, writer);
+			ParseContext ctx = new ParseContext(bm_formats, doc, writer);
 			write(doc, ctx);
 			writer.flush();
 			
@@ -177,7 +177,7 @@ implements DocumentFormatAdapter
 	{
 		String line=null;
 		// lies weiter bis wir eine Markerzeile finden
-		while ((line = ctx.nextLine()) != null && !isQualifiedLine(line))
+		while ((line = ctx.nextLine()) != null && !isQualifiedLine(line, ctx))
 			;
 		ctx.pushBack(line);
 	}
@@ -188,20 +188,6 @@ implements DocumentFormatAdapter
 		// splitte String, um den Marker zu extrahieren
 		String[] parts = line.split(FIELDSEPARATOR, -1);
 
-		if (ctx.bmfv == null){
-			for(BaumanFormatVersion v:bm_formats){
-				if (v.valid_ql.equals(parts[0])){
-					if (v.valid_for.equals(parts[v.valid_fieldindex])){
-						ctx.bmfv = v;
-						break;
-					}
-				}
-			}
-		}
-		if (ctx.bmfv == null){
-			throw new BMFormatException("No valid Baumanager Format Definition found!");
-		}
-		
 		// schauen wir mal, ob wir den Marker kennen
 		String marker = parts[0];
 		//	System.out.println ("checking marker "+marker);
@@ -223,7 +209,7 @@ implements DocumentFormatAdapter
 				parseLine (fields, partname, parts, ctx);
 			else if (marker.length() > 4) {
 				// wir sind wahrscheinlich im Text gelandet un der fängt zum Beispile mit einem #Format Zeichen an
-				System.out.println("leeching " + marker);
+				//System.out.println("leeching " + marker);
 				ctx.pushBack(line);
 				readUnqualifiedLines(ctx);
 			}
@@ -264,7 +250,7 @@ implements DocumentFormatAdapter
 			// hier kommen wir hin, falls wir zu wenig felder in parts haben
 			if (doUseDummies) {
 				for (; i < fields.length; i++) {
-					System.out.println("use dummy for " + fields[i]);
+					//System.out.println("use dummy for " + fields[i]);
 					docpart.putProperty (fields[i], 
 							"",  // dem DocumentPart ist es überlassen, ein sinnvollen defaultwert zu wählen
 							false, // lasse dirty state unverändert
@@ -282,7 +268,7 @@ implements DocumentFormatAdapter
 
 			for (; i+1 < parts.length-1; i++) {
 				cruft.putProperty ("srcField"+(i+1), parts[i+1], true, true);
-				System.out.println("adding cruft:>"+parts[i+1]+"<");
+				//System.out.println("adding cruft:>"+parts[i+1]+"<");
 			}
 		}
 	}
@@ -334,10 +320,10 @@ implements DocumentFormatAdapter
 		while (i < textlines || textlines == -1) {
 			line = ctx.nextLine();
 			i++;
-			if (textlines != -1 || !isQualifiedLine(line)) {
+			if (textlines != -1 || !isQualifiedLine(line, ctx)) {
 				text.append(line).append('\n');
 			}
-			if (textlines == -1 && isQualifiedLine(line))
+			if (textlines == -1 && isQualifiedLine(line, ctx))
 				break;
 		}
 
@@ -377,7 +363,7 @@ implements DocumentFormatAdapter
 			// hier kommen wir hin, falls wir zu wenig felder in parts haben
 			if (doUseDummies) {
 				for (; i < fields.length; i++) {
-					System.out.println("use dummy for " + fields[i]);
+					//System.out.println("use dummy for " + fields[i]);
 					docpart.putProperty (fields[i], 
 							null,  // dem DocumentPart ist es überlassen, ein sinnvollen defaultwert zu wählen
 							false, // lasse dirty state unverändert
@@ -394,7 +380,7 @@ implements DocumentFormatAdapter
 
 			for (; i+1 < parts.length-1; i++) {
 				cruft.putProperty ("srcField"+(i+1), parts[i+1], true, true); 
-				System.out.println("adding cruft:>"+parts[i+1]+"< at oz:"+ctx.lastOZ);
+				//System.out.println("adding cruft:>"+parts[i+1]+"< at oz:"+ctx.lastOZ);
 			}
 		}
 
@@ -443,7 +429,7 @@ implements DocumentFormatAdapter
 		while (line != null) {
 			text.append('\n').append(line);
 			line = ctx.nextLine();
-			if (isQualifiedLine(line))
+			if (isQualifiedLine(line, ctx))
 				break;
 		}
 
@@ -478,8 +464,9 @@ implements DocumentFormatAdapter
 			while (i < textlines || readAsMuchAsPossible) {
 				//System.out.println ((i+1) + " of " + textlines);
 				line = ctx.nextLine();
+				if (line == null) break;
 				i++;
-				if (!isQualifiedLine(line)) {
+				if (!isQualifiedLine(line, ctx)) {
 					text.append(line).append('\n');
 					if (ctx.expectShortTextLines == i) {
 						shortText = text;
@@ -487,7 +474,7 @@ implements DocumentFormatAdapter
 					}
 				}
 
-				if (readAsMuchAsPossible && isQualifiedLine(line)) {
+				if (readAsMuchAsPossible && isQualifiedLine(line, ctx)) {
 					ctx.pushBack (line);
 					break;
 				}
@@ -511,11 +498,11 @@ implements DocumentFormatAdapter
 		}
 	}
 
-	private boolean isQualifiedLine (String line) {
+	private boolean isQualifiedLine (String line, ParseContext ctx) {
 		boolean isQual = false;
 		if (line != null && line.length()>0 && line.charAt(0) == LINETYPEMARKER) {
 			String[] parts = line.split(FIELDSEPARATOR);
-			isQual = parts[0].length() < 5;
+			isQual = ctx.bmfv.getLinedef(parts[0]) != null;
 		}
 		return isQual;
 	}

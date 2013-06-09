@@ -34,11 +34,9 @@ public class CalcContext extends JBMDocumentPart
 		"discountedName","calced_discounted_cost","calced_discounted_revenue",
 		"boqName","calced_all_cost,calced_all_revenue",
 		"calced_material_cost","calced_material_revenue",
-		"calced_wage_cost","calced_wage_revenue",
+		"calced_wage_cost","calced_wage_revenue"
+	};
 
-		"unknown_a4_1", "unknown_a4_2", 
-		"unknown_a4_3", "unknown_a4_4",
-		"unknown_a4_5", "unknown_a4_6"};
 
 	StringBuffer calcpageNumber, 
 	dateCalcpageModify, userCalcpageModify, 
@@ -247,18 +245,26 @@ public class CalcContext extends JBMDocumentPart
 		for (int i=1; i < 20; i++){
 			String id = formatter.format(i);
 			mg.put(i, (MaterialGroupCalcPage)addPart ("mg"+id));
-			lg.put(i, (WageGroupCalcPage)addPart ("lg"+id));
+			lg.put(i, (WageGroupCalcPage)addPart ("wg"+id));
 		}
 
 		defaultMG = new DefaultMaterialGroupCalcPage(); 
 		defaultWG = new DefaultWageGroupCalcPage();
+		
+		putProperty("unknown_1", new StringProperty(new StringBuffer(""), true, false));
+		putProperty("unknown_2", new StringProperty(new StringBuffer(""), true, false));
+		putProperty("unknown_3", new StringProperty(new StringBuffer(""), true, false));
+		putProperty("unknown_4", new StringProperty(new StringBuffer(""), true, false));
+		putProperty("unknown_5", new StringProperty(new StringBuffer(""), true, false));
+		putProperty("unknown_6", new StringProperty(new StringBuffer(""), true, false));
+		putProperty("unknown_7", new StringProperty(new StringBuffer(""), true, false));
 		
 	}    
 
 	public JBMDocumentPart createDocumentPart (String kind) throws DocumentException{
 		if (kind.startsWith("mg")){
 			return new MaterialGroupCalcPage();
-		}else if (kind.startsWith("lg")){
+		}else if (kind.startsWith("wg")){
 			return new WageGroupCalcPage();
 		}
 		return super.createDocumentPart(kind);

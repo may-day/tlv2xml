@@ -13,10 +13,13 @@ public class WageGroupCalcPage  extends JBMDocumentPart{
 		"wgOverheadCostFactor",
 		"wgFactor1", 
 		"wgFactor2",
-	"wgPricePerHourHardCoded"};
+		"wgPricePerHourHardCoded",
+		"calced_cost",
+		"calced_revenue"
+	};
 
 	StringBuffer wgName, wgTimeFactor, wgCostPerHour, 
-	wgOverheadCostFactor, wgFactor1, wgFactor2, wgPricePerHourHardCoded;
+	wgOverheadCostFactor, wgFactor1, wgFactor2, wgPricePerHourHardCoded, calced_cost, calced_revenue;
 
 	public WageGroupCalcPage() {
 
@@ -27,6 +30,8 @@ public class WageGroupCalcPage  extends JBMDocumentPart{
 		wgFactor1 = new StringBuffer();
 		wgFactor2 = new StringBuffer();
 		wgPricePerHourHardCoded= new StringBuffer();
+		calced_cost = new StringBuffer();
+		calced_revenue = new StringBuffer();
 
 		putProperty("wgName", new StringProperty(wgName, true, false));
 		putProperty("wgTimeFactor", new StringProperty(wgTimeFactor, true, false));
@@ -35,6 +40,10 @@ public class WageGroupCalcPage  extends JBMDocumentPart{
 		putProperty("wgFactor1", new StringProperty(wgFactor1, true, false));
 		putProperty("wgFactor2", new StringProperty(wgFactor2, true, false));    	
 		putProperty("wgPricePerHourHardCoded", new StringProperty(wgPricePerHourHardCoded, true, false));    	
+		putProperty("calced_cost", new StringProperty(calced_cost, true, false));
+		putProperty("calced_revenue", new StringProperty(calced_revenue, true, false));
+		putProperty("unknown_1", new StringProperty(new StringBuffer(), true, false));
+		putProperty("unknown_2", new StringProperty(new StringBuffer(), true, false));
 	}
 
 	public BigDecimal LohnGemeinkosten(){
@@ -69,6 +78,7 @@ class DefaultWageGroupCalcPage extends WageGroupCalcPage{
 
 	public DefaultWageGroupCalcPage() throws PropertyMissingException {
 
+		super();
 	set("wgTimeFactor", "1.0");
 	set("wgCostPerHour", "0.0");
 	set("wgOverheadCostFactor", "0.0");
