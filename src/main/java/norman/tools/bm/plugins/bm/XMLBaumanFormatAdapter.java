@@ -1,15 +1,11 @@
 package norman.tools.bm.plugins.bm;
 
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 
+import javax.xml.bind.DatatypeConverter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Result;
@@ -19,17 +15,12 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import norman.tools.bm.DocumentException;
 import norman.tools.bm.JBMDocumentNames;
-import norman.tools.bm.document.AbstractDocumentPart;
 import norman.tools.bm.document.DocumentPart;
-import norman.tools.bm.document.DocumentPartMissingException;
-import norman.tools.bm.document.PropertyMissingException;
 import norman.tools.bm.plugins.DocumentFormatAdapter;
 import norman.tools.bm.plugins.FormatAdapterException;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.ProcessingInstruction;
 
 class XMLParseContext extends ParseContext{
@@ -125,7 +116,16 @@ public class XMLBaumanFormatAdapter extends AbstractBaumanAdapter
         xmlctx.current = xmlctx.text;
 	}
 	protected void emitMemoField(String marker, String fieldname, String fieldvalue, ParseContext ctx) throws Exception{
-        emitField(marker, fieldname, fieldvalue, ctx);
+        //emitField(marker, fieldname, fieldvalue, ctx);
+        XMLParseContext xmlctx = (XMLParseContext)ctx;
+        
+		Element field = xmlctx.current.getOwnerDocument().createElement(fieldname);
+		if (needsXmlSanitization(fieldvalue)){
+			fieldvalue = DatatypeConverter.printBase64Binary(fieldvalue.getBytes());
+			field.setAttribute("enc", "base64");
+		}
+		field.appendChild(xmlctx.current.getOwnerDocument().createCDATASection(fieldvalue));
+		xmlctx.current.appendChild(field);
 	}
 	
 	protected void emitMemoEnd(String marker, String partName, String[] fields, ParseContext ctx) throws Exception{
@@ -189,5 +189,37 @@ public class XMLBaumanFormatAdapter extends AbstractBaumanAdapter
 		emitField(marker, fieldname, fieldvalue, ctx);
 	}
 	
+	public String xmlSanitize( String str, boolean replace_with_space ) {
+		if( str == null ) return null;
 
+		StringBuilder erg = new StringBuilder();
+		char ch;
+
+		for( int i = 0; i < str.length(); i++ ) {
+			ch = str.charAt(i);
+			// xml char http://www.w3.org/TR/xml/#charsets
+			if(ch == 0x0009 || ch == 0x000A || ch == 0x000D || (ch >= 0x0020 && ch <= 0xD7FF ) || (ch >= 0xE000 && ch <= 0xFFFD )) 
+				erg.append(ch);
+			else if (replace_with_space)
+				erg.append(' ');
+			
+		}
+		return erg.toString();
+	}
+
+	public boolean needsXmlSanitization( String str ) {
+		if( str != null ){
+			char ch;
+	
+			for( int i = 0; i < str.length(); i++ ) {
+				ch = str.charAt(i);
+				// xml char http://www.w3.org/TR/xml/#charsets
+				if(!(ch == 0x0009 || ch == 0x000A || ch == 0x000D || (ch >= 0x0020 && ch <= 0xD7FF ) || (ch >= 0xE000 && ch <= 0xFFFD ))) 
+					return true;
+				
+			}
+		}
+		return false;
+	}
+	
 }

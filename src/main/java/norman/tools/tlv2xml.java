@@ -36,46 +36,33 @@ public class tlv2xml {
 		if (args.length != 2){
 			System.out.println("1. parameter must be  a tlv file and 2nd the (to be created) xml file.");
 		}else{
-			LV lv = new LV();
-			BaumanFormatAdapter bfa = new BaumanFormatAdapter ( true, //skipJunk,
-					true, //read Text that has too many lines
-					true, //skipUnknownLineTypes,
-					true //useDummies
-					, knownVersions
-			);
-			XMLBaumanFormatAdapter xbfa = new XMLBaumanFormatAdapter (knownVersions);
-			bfa.read ( new FileInputStream (args[0]), lv);
-			if ("/dev/null".equals(args[1]))
-			{
-				
-				xbfa.write ( new OutputStream() {
-				    public void write(int i) throws IOException {
-				    }
-				}, lv);
-				
-			}else
-				xbfa.write ( new FileOutputStream(args[1]), lv);
+			convert( new FileInputStream (args[0]), args[1]);
 		}
 	}
 	
 	public static void convert(InputStream xmlstream, String outfile) throws Exception {
-			LV lv = new LV();
-			BaumanFormatAdapter bfa = new BaumanFormatAdapter ( true, //skipJunk,
-					true, //read Text that has too many lines
-					true, //skipUnknownLineTypes,
-					true //useDummies
-					, knownVersions
-			);
-			XMLBaumanFormatAdapter xbfa = new XMLBaumanFormatAdapter (knownVersions);
-			bfa.read ( xmlstream, lv);
+			OutputStream os;
 			if ("/dev/null".equals(outfile))
 			{
-				
-				xbfa.write ( new OutputStream() {
-				    public void write(int i) throws IOException {
+				os = new OutputStream() {
+				    	public void write(int i) throws IOException {
 				    }
-				}, lv);
+				};
 			}else
-			xbfa.write ( new FileOutputStream(outfile), lv);
+				os = new FileOutputStream(outfile);
+			convert(xmlstream, os);
+	}
+
+	public static void convert(InputStream xmlstream, OutputStream os) throws Exception {
+		LV lv = new LV();
+		BaumanFormatAdapter bfa = new BaumanFormatAdapter ( true, //skipJunk,
+				true, //read Text that has too many lines
+				true, //skipUnknownLineTypes,
+				true //useDummies
+				, knownVersions
+		);
+		XMLBaumanFormatAdapter xbfa = new XMLBaumanFormatAdapter (knownVersions);
+		bfa.read ( xmlstream, lv);
+		xbfa.write ( os, lv);
 	}
 }
