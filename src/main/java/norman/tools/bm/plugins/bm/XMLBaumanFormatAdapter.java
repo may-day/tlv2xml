@@ -100,7 +100,13 @@ public class XMLBaumanFormatAdapter extends AbstractBaumanAdapter
         XMLParseContext xmlctx = (XMLParseContext)ctx;
         
 		Element field = xmlctx.current.getOwnerDocument().createElement(fieldname);
-		field.setTextContent(fieldvalue);
+
+		if (needsXmlSanitization(fieldvalue)){
+			fieldvalue = DatatypeConverter.printBase64Binary(fieldvalue.getBytes());
+			field.setAttribute("enc", "base64");
+			field.appendChild(xmlctx.current.getOwnerDocument().createCDATASection(fieldvalue));
+		}else
+			field.setTextContent(fieldvalue);
 		xmlctx.current.appendChild(field);
 		
 	}
