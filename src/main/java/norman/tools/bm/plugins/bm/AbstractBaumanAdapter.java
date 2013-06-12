@@ -5,8 +5,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -189,9 +187,9 @@ class ParseContext {
 			infiniLoop = 0;
 		}
 		//	System.out.println ("line >" + lineCounter + "<");
-		
+		String[] parts=null;
 		if (bmfv == null){
-			String[] parts = line.split(AbstractBaumanAdapter.FIELDSEPARATOR,-1);
+			parts = line.split(AbstractBaumanAdapter.FIELDSEPARATOR,-1);
 			for(BaumanFormatVersion v:bmversions){
 				if (v.valid_ql.equals(parts[0])){
 					if (v.valid_for.equals(parts[v.valid_fieldindex])){
@@ -202,7 +200,9 @@ class ParseContext {
 			}
 		}
 		if (bmfv == null){
-			throw new BMFormatException("No valid Baumanager Format Definition found!");
+			String bmversion="???";
+			if (parts != null) bmversion = parts[1];
+			throw new BMFormatException("No valid Baumanager Format Definition found for:" + bmversion);
 		}
 		
 		return line;

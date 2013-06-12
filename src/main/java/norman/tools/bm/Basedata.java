@@ -2,7 +2,7 @@ package norman.tools.bm;
 
 public class Basedata extends JBMDocumentPart {
 
-String[] fields = new String[]{	"createdBy","bizarrePosCounter","unknown_1","keepPosText","lockStructure","currency","unknown_2","unknown_3","unknown_4","orderType","unknown_5","clientType","netCalc","ozMask","labelTitle1","labelTitle2","labelTitle3","labelTitle4","salesPriceYearTable","unknown_6","unknown_7",
+String[] fields = new String[]{	"createdBy","bizarrePosCounter","unknown_1","keepPosText","lockStructure","currency","unknown_2","unknown_3","p13b","orderType","tenderText","clientType","netCalc","ozMask","labelTitle1","labelTitle2","labelTitle3","labelTitle4","salesPriceYearTable","idxStepSizeRenumber","leadingZeroRenumber",
 		"proposalID","unknown_8","unknown_9","projectID","projectName1","projectName2",
 		"constructionSiteLine1","constructionSiteLine2","constructionSiteLine3",
 		"clientid","addressName1","addressName2","addressName3","addressStreet","addressCity","addressCountry","addressZipcode",
