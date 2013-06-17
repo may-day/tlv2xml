@@ -13,7 +13,20 @@ import norman.tools.bm.plugins.bm.XMLBaumanFormatAdapter;
 public class tlv2xml {
 
 	public static String [] knownVersions = new String[]{
-			"norman/tools/bm/plugins/bm/bauman_v399.def"
+			 "norman/tools/bm/plugins/bm/bauman_v347.def"
+			,"norman/tools/bm/plugins/bm/bauman_v352.def"
+			,"norman/tools/bm/plugins/bm/bauman_v367.def"
+			,"norman/tools/bm/plugins/bm/bauman_v370.def"
+			,"norman/tools/bm/plugins/bm/bauman_v373.def"
+			,"norman/tools/bm/plugins/bm/bauman_v376.def"
+			,"norman/tools/bm/plugins/bm/bauman_v379.def"
+			,"norman/tools/bm/plugins/bm/bauman_v380.def"
+			,"norman/tools/bm/plugins/bm/bauman_v384.def"
+			,"norman/tools/bm/plugins/bm/bauman_v389.def"
+			,"norman/tools/bm/plugins/bm/bauman_v392.def"
+			,"norman/tools/bm/plugins/bm/bauman_v396.def"
+			,"norman/tools/bm/plugins/bm/bauman_v397.def"
+			,"norman/tools/bm/plugins/bm/bauman_v399.def"
 			,"norman/tools/bm/plugins/bm/bauman_v404.def"
 			,"norman/tools/bm/plugins/bm/bauman_v410.def"
 			,"norman/tools/bm/plugins/bm/bauman_v412.def"

@@ -28,6 +28,7 @@ public class Position extends JBMDocumentPart
 		"netpos",
 		"rounding",
 		"markZ",
+		"mode_surcharge_discount",
 		"surchargeFactor",
 		"materialGroup",
 		"materialPurchasePrice",
@@ -114,6 +115,7 @@ public class Position extends JBMDocumentPart
 	StringBuffer netpos;
 	StringBuffer rounding;
 	StringBuffer markZ;
+	StringBuffer mode_surcharge_discount;
 	StringBuffer surchargeFactor;
 	StringBuffer materialGroup;
 	StringBuffer materialPurchasePrice;
@@ -201,6 +203,7 @@ public class Position extends JBMDocumentPart
 		netpos = new StringBuffer();
 		rounding = new StringBuffer();
 		markZ = new StringBuffer();
+		mode_surcharge_discount = new StringBuffer();
 		surchargeFactor = new StringBuffer();
 		materialGroup = new StringBuffer();
 		materialPurchasePrice = new StringBuffer();
@@ -305,6 +308,7 @@ public class Position extends JBMDocumentPart
 		putProperty ("netpos", new StringProperty (netpos, true, false));
 		putProperty ("rounding", new StringProperty (rounding, true, false));
 		putProperty ("markZ", new StringProperty (markZ, true, false));
+		putProperty ("mode_surcharge_discount", new StringProperty (mode_surcharge_discount, true, false));
 		putProperty ("surchargeFactor", new StringProperty (surchargeFactor, true, false));
 		putProperty ("materialGroup", new StringProperty (materialGroup, true, false));
 		putProperty ("materialPurchasePrice", new StringProperty (materialPurchasePrice, true, false));
