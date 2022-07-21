@@ -4,8 +4,8 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Base64;
 
-import javax.xml.bind.DatatypeConverter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Result;
@@ -19,14 +19,17 @@ import norman.tools.bm.JBMDocumentNames;
 import norman.tools.bm.document.DocumentPart;
 import norman.tools.bm.plugins.DocumentFormatAdapter;
 import norman.tools.bm.plugins.FormatAdapterException;
+//import norman.tools.bm.plugins.bm.ParseContext;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.ProcessingInstruction;
 
+
+
 class XMLParseContext extends ParseContext{
 	public Element root, header, calcpage, wg, mg, text, positions, current, currentpos;
-	public XMLParseContext(ArrayList<BaumanFormatVersion> bmversions, DocumentPart doc){
-		super(bmversions,doc, null, null);
+	public XMLParseContext(ArrayList<BaumanFormatVersion> bmversions, String fallbackVersion, DocumentPart doc){
+		super(bmversions, fallbackVersion, doc, null, null);
 		root = header = calcpage = wg = mg = text = positions = current = currentpos = null;
 	}
 
@@ -39,6 +42,7 @@ public class XMLBaumanFormatAdapter extends AbstractBaumanAdapter
     int lineCounter;
 
     String requestDocPart, requestField;
+	Base64.Encoder b64enc = Base64.getEncoder();
 
     public XMLBaumanFormatAdapter(	String bm_versions[]) throws IOException
     {
@@ -102,7 +106,7 @@ public class XMLBaumanFormatAdapter extends AbstractBaumanAdapter
 		Element field = xmlctx.current.getOwnerDocument().createElement(fieldname);
 
 		if (needsXmlSanitization(fieldvalue)){
-			fieldvalue = DatatypeConverter.printBase64Binary(fieldvalue.getBytes());
+			fieldvalue = b64enc.encodeToString(fieldvalue.getBytes());
 			field.setAttribute("enc", "base64");
 			field.appendChild(xmlctx.current.getOwnerDocument().createCDATASection(fieldvalue));
 		}else
@@ -127,7 +131,7 @@ public class XMLBaumanFormatAdapter extends AbstractBaumanAdapter
         
 		Element field = xmlctx.current.getOwnerDocument().createElement(fieldname);
 		if (needsXmlSanitization(fieldvalue)){
-			fieldvalue = DatatypeConverter.printBase64Binary(fieldvalue.getBytes());
+			fieldvalue = b64enc.encodeToString(fieldvalue.getBytes());
 			field.setAttribute("enc", "base64");
 		}
 		field.appendChild(xmlctx.current.getOwnerDocument().createCDATASection(fieldvalue));
@@ -138,10 +142,10 @@ public class XMLBaumanFormatAdapter extends AbstractBaumanAdapter
 		emitLineEnd(marker, partName, fields, ctx);
 	}
 	
-    public void write(java.io.OutputStream os, DocumentPart doc) throws Exception
+    public void write(java.io.OutputStream os, DocumentPart doc, String bmversion) throws Exception
     {
-        XMLParseContext xmlctx = new XMLParseContext(bm_formats, doc);
-        write(doc, xmlctx);
+        XMLParseContext xmlctx = new XMLParseContext(bm_formats, null, doc);
+        write(doc, xmlctx, bmversion);
     	
         // Prepare the DOM document for writing
         Source source = new DOMSource(xmlctx.root.getOwnerDocument());
@@ -170,9 +174,8 @@ public class XMLBaumanFormatAdapter extends AbstractBaumanAdapter
 	}
 	
 	protected void emitPositionEnd(String marker, String partName, String[] fields, ParseContext ctx) throws Exception{
-		emitLineEnd(marker, partName, fields, ctx);
-		
         XMLParseContext xmlctx = (XMLParseContext)ctx;
+		emitLineEnd(marker, partName, fields, ctx);
 	    xmlctx.currentpos = null;
 	}
 

@@ -1,4 +1,4 @@
-@VALID:BauManWin V4.82,#K01,createdBy
+@VALID:BauManWin V5.22,#K01,createdBy
 !HEADER:#K.*
 !CALCPAGE:#A00,#A20,#A4[0-9],#A5[0-4]
 !CALCPAGE.mg%1$02d:#A0[1-9],#A1[0-9]
@@ -7,7 +7,7 @@
 !POSITIONS:#P[PIAEMUQRSX12345]
 !POSITIONEXTENSIONS:#F1,#F2
 !END:#X
-#K01,createdBy,bizarrePosCounter,unknown_1,keepPosText,lockStructure,currency,unknown_2,unknown_3,p13b,orderType,tenderText,clientType,netCalc,ozMask,labelTitle1,labelTitle2,labelTitle3,labelTitle4,salesPriceYearTable,idxStepSizeRenumber,leadingZeroRenumber
+#K01,createdBy,bizarrePosCounter,unknown_1,keepPosText,lockStructure,currency,p13b,orderType,tenderText,clientType,netCalc,ozMask,labelTitle1,labelTitle2,labelTitle3,labelTitle4,salesPriceYearTable,idxStepSizeRenumber,leadingZeroRenumber
 #K02,proposalID,unknown_8,unknown_9,projectID,projectName1,projectName2
 #K03,constructionSiteLine1,constructionSiteLine2,constructionSiteLine3
 #K04,clientid,addressName1,addressName2,addressName3,addressStreet,addressCity,addressCountry,addressZipcode
@@ -15,10 +15,10 @@
 #K06,clientRequest,clientOrderId,deliveryConditions,shippingType
 #K07,warranty,proposalFixationTimeLimit,deliveryDate,deliveryDateText,processor,signature1,signature2,printoutType,printoutSettings
 #K08,paymentMode,VATtext,VATidx,VATproz,paymentConditionText,paymentConditionDays1,paymentConditionDays2,paymentConditionPercent,paymentConditionDaysNetText,paymentConditionDaysNet
-#K09,kindText,object_gewerk,chances,unknown_12,projectManager,lumpOrder,desiredDate,contractNumber,unknown_13,officecode,unknown_14,unknown_15,unknown_16,officecode_sellercode,unknown_17,unknown_18,unknown_19,unknown_20,unknown_21,unknown_22,unknown_23,unknown_24,unknown_25,unknown_26,unknown_27,unknown_28,unknown_29,unknown_30,unknown_31,unknown_32,unknown_33,unknown_34,unknown_35
+#K09,object_gewerk,chances,unknown_12,projectManager,lumpOrder,desiredDate,contractNumber,unknown_13,officecode,unknown_14,unknown_15,unknown_16,officecode_sellercode,unknown_17,unknown_18,unknown_19,unknown_20,unknown_21,unknown_22,unknown_23,unknown_24,unknown_25,unknown_26,unknown_27,unknown_28,unknown_29,unknown_30,unknown_31,unknown_32,unknown_33,unknown_34,unknown_35
 #K10,dateBOQCreation,userBOQCreation,dateBOQChange,userBOQChange,dateProposalSubmittalLetter,userProposalSubmittalLetter,dateOrderConfirmation,userOrderConfirmation,dateBOQLock,userBOQLock,datePLReadIn,userPLReadIn,dateGAEBTransmission,userGAEBTransmission,dateCostRecalc,userCostRecalc,dateInvoice,unknown_36,unknown_37,unknown_38
 #K11,clientCommissionId,signatureSalutation,key1,key2
-#K12
+#K12,oenorm1,oenorm2
 #A00,calcpageNumber,dateCalcpageModify,userCalcpageModify,calcPageName,mgFact3isSurchargeDiscount,BOQfinalFactor,discountAll,discountMaterial,discountWage,discountSpecial,factorAll,factorMaterial,factorWage,clientDiscount,gross,factorLimitMargin,mode_surcharge_discount
 #A41,fixCostName1,fixCost1,calced_fixCost1_cost,calced_fixCost1_revenue
 #A42,fixCostName2,fixCost2,calced_fixCost2_cost,calced_fixCost2_revenue
@@ -47,10 +47,10 @@
 #TTE,tetext
 #TBK,tbktext
 #TFS,tfstext
-#P(P|I|A|E|M|U|Q|R|S),unknown_1,oz,clientoz,name,goodsgroup,ordernumber,supplier,suppliernumber,manufacturer,unit,unknown_2,circa,print_short_long,formfeed,shortTextLinesCount,allTextLinesCount
-#F1,marker,directSellingPrice,netpos,rounding,markZ,surchargeFactor,materialGroup,materialPurchasePrice,materialSupplierFactor,materialPurchaseDiscount,materialSellingPrice,materialFactor,wagePurchasePrice,wageSellingPrice,wageGroup,wageGroup1,wageGroup2,wageGroup3,wageGroup4,wageGroup5,wageMinutes1,wageMinutes2,wageMinutes3,wageMinutes4,wageMinutes5,wageFactor,amount,materialUnitprice_wo_addons,unknown_6,unknown_7,unknown_8,unknown_9,unknown_10,materialPurchasePrice_ignored,materialUnitPrice_ignored,wageUnitprice_wo_addons,wageUnitprice1_wo_addons,wageUnitprice2_wo_addons,wageUnitprice3_wo_addons,wageUnitprice4_wo_addons,wageUnitprice5_wo_addons,wagePurchaseCost_reverseCalced,wageUnitprice
-#F2,addonNumber1,addonValue1,addonNumber2,addonValue2,addonNumber3,addonValue3,addonNumber4,addonValue4,addonNumber5,addonValue5,addonNumber6,addonValue6,addonNumber7,addonValue7,addonNumber8,addonValue8,addonNumber9,addonValue9,addonNumber10,addonValue10,addonNumber11,addonValue11,addonNumber12,addonValue12,addonNumber13,addonValue13,addonNumber14,addonValue14,addonNumber15,addonValue15,addonNumber16,addonValue16,addonNumber17,addonValue17,addonNumber18,addonValue18,addonNumber19,addonValue19,addonNumber20,addonValue20
-#PZ,unknown_1,oz,clientoz,name,unknown_2,unknown_3,print_short_long,formfeed,shortTextLinesCount,allTextLinesCount
-#P(1|2|3|4|5),unknown_1,oz,clientoz,name,materialSellingPrice,surchargeFactor,mode_surcharge_discount,print_short_long,formfeed,shortTextLinesCount,allTextLinesCount
-#PX,unknown_1,oz,clientoz,ordernumber,unknown_2,print_short_long,formfeed,shortTextLinesCount,allTextLinesCount
+#P(P|I|A|E|M|U|Q|R|S),unknown_1,oz,clientoz,flags,name,goodsgroup,ordernumber,boz,supplier,suppliernumber,manufacturer,unit,unknown_2,circa,print_short_long,formfeed,shortTextLinesCount,allTextLinesCount
+#F1,marker,directSellingPrice,netpos,rounding,markZ,surchargeFactor,materialGroup,materialPurchasePrice,materialSupplierFactor,materialPurchaseDiscount,materialSellingPrice,materialFactor,wagePurchasePrice,wageSellingPrice,wageGroup,wageGroup1,wageGroup2,wageGroup3,wageGroup4,wageGroup5,wageMinutes1,wageMinutes2,wageMinutes3,wageMinutes4,wageMinutes5,wageFactor,amount,prognosisAmount1,prognosisAmount2,prognosisAmount3,prognosisAmount4,materialUnitprice_wo_addons,unknown_6,unknown_7,unknown_8,unknown_9,unknown_10,materialPurchasePrice_ignored,materialUnitPrice_ignored,wageUnitprice_wo_addons,wageUnitprice1_wo_addons,wageUnitprice2_wo_addons,wageUnitprice3_wo_addons,wageUnitprice4_wo_addons,wageUnitprice5_wo_addons,wagePurchaseCost_reverseCalced,wageUnitprice
+#F2,addonNumber1,addonValue1,addonNumber2,addonValue2,addonNumber3,addonValue3,addonNumber4,addonValue4,addonNumber5,addonValue5,addonNumber6,addonValue6,addonNumber7,addonValue7,addonNumber8,addonValue8,addonNumber9,addonValue9,addonNumber10,addonValue10,addonNumber11,addonValue11,addonNumber12,addonValue12,addonNumber13,addonValue13,addonNumber14,addonValue14,addonNumber15,addonValue15,addonNumber16,addonValue16,addonNumber17,addonValue17,addonNumber18,addonValue18,addonNumber19,addonValue19,addonNumber20,addonValue20,addonNumber21,addonValue21,addonNumber22,addonValue22,addonNumber23,addonValue23,addonNumber24,addonValue24,addonNumber25,addonValue25,addonNumber26,addonValue26,addonNumber27,addonValue27,addonNumber28,addonValue28,addonNumber29,addonValue29,addonNumber30,addonValue30,printaddon
+#PZ,unknown_1,oz,clientoz,flags,name,goodsgroup,ordernumber,marker,surchargeFactor,markZ,print_short_long,formfeed,shortTextLinesCount,allTextLinesCount
+#P(1|2|3|4|5),unknown_1,oz,clientoz,flags,name,goodsgroup,ordernumber,marker,materialSellingPrice,surchargeFactor,mode_surcharge_discount,print_short_long,formfeed,shortTextLinesCount,allTextLinesCount
+#PX,unknown_1,oz,clientoz,flags,name,goodsgroup,ordernumber,marker,print_short_long,formfeed,shortTextLinesCount,allTextLinesCount
 #X

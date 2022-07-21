@@ -274,7 +274,7 @@ public class CalcContext extends JBMDocumentPart
 	MaterialGroupCalcPage getMG(String materialGroup){
 		MaterialGroupCalcPage g=null;
 		try{
-			g = mg.get(new Integer(materialGroup));
+			g = mg.get(Integer.valueOf(materialGroup));
 		}catch(NumberFormatException ex){}
 			
 		if (g == null)
@@ -285,7 +285,7 @@ public class CalcContext extends JBMDocumentPart
 	WageGroupCalcPage getLG(String wageGroup){
 		WageGroupCalcPage g=null;
 		try{
-			g = lg.get(new Integer(wageGroup));
+			g = lg.get(Integer.valueOf(wageGroup));
 		}catch(NumberFormatException ex){}
 		if (g == null)
 			g = defaultWG;

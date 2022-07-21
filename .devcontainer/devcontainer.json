@@ -1,0 +1,14 @@
+{
+    "name": "Maven Java 18",
+    "dockerFile": "Dockerfile",
+    "customizations": {
+        "vscode": {
+          "extensions": ["vscjava.vscode-java-pack"],
+          "settings": {
+            "java.jdt.ls.java.home": "/usr/java/openjdk-18"
+          }
+        }
+      },
+      // Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
+      "remoteUser": "vscode"
+}

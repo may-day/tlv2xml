@@ -24,15 +24,15 @@
 #A3 ,surchargeName1,surchargeFactor1,surchargeFactorProposal1,surchargeName2,surchargeFactor2,surchargeFactorProposal2,surchargeName3,surchargeFactor3,surchargeFactorProposal3,surchargeName4,surchargeFactor4,surchargeFactorProposal4,surchargeName5,surchargeFactor5,surchargeFactorProposal5
 #A4 ,shippingAbsolute,shippingFactor,handlingAbsolute,handlingFactor,unknown_1,unknown_2,unknown_3,unknown_4,unknown_5,unknown_6
 #A20,calced_material_cost,calced_material_revenue
-#A40,calced_wage_cost,calced_wage_revenue,unknown_7
+#A40,calced_wage_cost,calced_wage_revenue,calced_wage_hours
 #A41,unknown_8,shippingAbsolute2
 #A42,unknown_10,handlingAbsolute2
 #A43,unknown_12,calced_discounted_revenue
 #A44,calced_all_cost,calced_all_revenue
 #A0[1-9],mgName,unknown_1,mgCalcListpriceBased,mgOverheadCostFactor,mgFactor1,mgFactor2,mgFactor3,calced_cost,calced_revenue
 #A1[0-9],mgName,unknown_1,mgCalcListpriceBased,mgOverheadCostFactor,mgFactor1,mgFactor2,mgFactor3,calced_cost,calced_revenue
-#A2[1-9],wgName,unknown_1,wgTimeFactor,wgCostPerHour,wgOverheadCostFactor,wgFactor1,wgFactor2,wgPricePerHourHardCoded,calced_cost,calced_revenue,unknown_2
-#A3[0-9],wgName,unknown_1,wgTimeFactor,wgCostPerHour,wgOverheadCostFactor,wgFactor1,wgFactor2,wgPricePerHourHardCoded,calced_cost,calced_revenue,unknown_2
+#A2[1-9],wgName,unknown_1,wgTimeFactor,wgCostPerHour,wgOverheadCostFactor,wgFactor1,wgFactor2,wgPricePerHourHardCoded,calced_cost,calced_revenue,calced_hours
+#A3[0-9],wgName,unknown_1,wgTimeFactor,wgCostPerHour,wgOverheadCostFactor,wgFactor1,wgFactor2,wgPricePerHourHardCoded,calced_cost,calced_revenue,calced_hours
 #TPX,projecttext
 #TT1,t1text
 #TT2,t2text

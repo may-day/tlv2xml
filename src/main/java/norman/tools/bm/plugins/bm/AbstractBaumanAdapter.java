@@ -2,10 +2,14 @@ package norman.tools.bm.plugins.bm;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,7 +22,10 @@ import norman.tools.bm.document.DocumentPart;
 import norman.tools.bm.document.PropertyMissingException;
 import norman.tools.bm.plugins.FormatAdapterException;
 
-class BaumanFormatVersion {
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+
+class BaumanFormatVersion implements Comparable<BaumanFormatVersion>{
 	static Pattern markeridx = Pattern.compile("\\D*(\\d*)");
 	public String valid_for, valid_ql, valid_fieldname;
 	public int valid_fieldindex;
@@ -105,6 +112,11 @@ class BaumanFormatVersion {
 		}
 		return -1;
 	}
+	
+	@Override
+	public int compareTo(BaumanFormatVersion arg0) {
+		return this.valid_for.compareToIgnoreCase(arg0.valid_for);
+	}
 }
 
 class ParseContext {
@@ -119,6 +131,7 @@ class ParseContext {
 	public String requestDocPart, requestField;
 	public String lastOZ;
 	boolean usePushbackLine;
+	String fallbackVersion;
 	
 	public BaumanFormatVersion bmfv;
 	public ArrayList<BaumanFormatVersion> bmversions;
@@ -127,11 +140,12 @@ class ParseContext {
 	public DocumentPart doc;
 	public StringBuffer line;
 	
-	ParseContext(ArrayList<BaumanFormatVersion> bmversions, DocumentPart doc, BufferedReader reader, BufferedWriter writer){
+	ParseContext(ArrayList<BaumanFormatVersion> bmversions, String fallbackVersion, DocumentPart doc, BufferedReader reader, BufferedWriter writer){
 		this.bmversions = bmversions;
 		this.doc = doc;
 		this.reader = reader;
 		this.writer = writer;
+		this.fallbackVersion = fallbackVersion; 
 		usePushbackLine = false;
 		bmfv = null;
 		lineCounter = 0;
@@ -139,12 +153,12 @@ class ParseContext {
 		lastProcessedPosition (null, -1, -1);
 		
 	}
-	public ParseContext(ArrayList<BaumanFormatVersion> bmversions, DocumentPart doc, BufferedReader reader){
-		this(bmversions, doc, reader, null);
+	public ParseContext(ArrayList<BaumanFormatVersion> bmversions, String fallbackVersion, DocumentPart doc, BufferedReader reader){
+		this(bmversions, fallbackVersion, doc, reader, null);
 	}
 	
-	public ParseContext(ArrayList<BaumanFormatVersion> bmversions, DocumentPart doc, BufferedWriter writer){
-		this(bmversions, doc, null, writer);
+	public ParseContext(ArrayList<BaumanFormatVersion> bmversions, String fallbackVersion, DocumentPart doc, BufferedWriter writer){
+		this(bmversions, fallbackVersion, doc, null, writer);
 	}
 	
 	public void lastProcessedPosition (DocumentPart docPart, int countTextLinesAhead, int countShortTextLinesAhead)
@@ -165,6 +179,7 @@ class ParseContext {
 		{
 			try {
 				line = reader.readLine();
+
 				if (line != null)
 					lineCounter++;
 			} catch (IOException exc) {
@@ -201,8 +216,28 @@ class ParseContext {
 		}
 		if (bmfv == null){
 			String bmversion="???";
-			if (parts != null) bmversion = parts[1];
-			throw new BMFormatException("No valid Baumanager Format Definition found for:" + bmversion);
+			if (parts != null){
+				bmversion = parts[1];
+				if (fallbackVersion != null && !fallbackVersion.isEmpty()){
+					ArrayList<BaumanFormatVersion> filtered = new ArrayList<BaumanFormatVersion>();
+					for(BaumanFormatVersion v:bmversions){
+						if (fallbackVersion.equalsIgnoreCase("<") && v.valid_for.compareToIgnoreCase(bmversion) < 0) filtered.add(v);
+						else if (fallbackVersion.equalsIgnoreCase(">") && v.valid_for.compareToIgnoreCase(bmversion) > 0) filtered.add(v);
+						else if (fallbackVersion.equalsIgnoreCase(v.valid_for)) filtered.add(v);
+					}
+					if (filtered.size()>0){
+						filtered.sort(null);
+						if (fallbackVersion.equalsIgnoreCase("<")) Collections.reverse(filtered);
+						bmfv = filtered.get(0);
+						
+					}
+					
+				}
+			}
+			
+			if (bmfv == null){
+				throw new BMFormatException("No valid Baumanager Format Definition found for:" + bmversion);
+			}
 		}
 		
 		return line;
@@ -303,6 +338,8 @@ public abstract class AbstractBaumanAdapter {
     static final String tbk = "#TBK";
     /* Text Firmenstempel */
     static final String tfs = "#TFS";
+    /* Text Firmenstempel */
+    static final String efb = "#EFB";
     /* Positionsarten */
     static final String pp = "#PP"; // P-Position
     static final String pi = "#PI"; // I-Position
@@ -323,31 +360,74 @@ public abstract class AbstractBaumanAdapter {
     static final String f1 = "#F1"; // erweiterte Artikeldaten (nicht bei 1234X)
     static final String f2 = "#F2"; // erweiterte Artikeldaten (nicht bei 1234X)
     static final String X = "#X"; // Ende Marker
-    static final String DEFAULT_VERSION = "BauManWin V4.82";
+    static final String DEFAULT_VERSION = "BauManWin V5.40";
 
 	ArrayList<BaumanFormatVersion> bm_formats;
     
     protected AbstractBaumanAdapter(String bm_versions[]) throws IOException{
 		bm_formats = new ArrayList<BaumanFormatVersion>();
+		ClassLoader ctxldr = Thread.currentThread().getContextClassLoader();
 		for(String bm_version:bm_versions){
-			ClassLoader ctxldr = Thread.currentThread().getContextClassLoader();
-			InputStream defs = ctxldr.getResourceAsStream(bm_version);
-			BufferedReader br=new BufferedReader(new InputStreamReader(defs));
-			BaumanFormatVersion bmfv = new BaumanFormatVersion(br);
-			bm_formats.add(bmfv);
+			// bm_version ist ein Pfad zu einer Resource/File, die entweder eine .def Datei ist oder
+			// ein Verzeichnis (dann werden alle .def dateien darin glelesen)
+			if( new File(bm_version).isDirectory() ){
+				for(File f: FileUtils.listFiles(new File(bm_version), new String[]{"def"}, false)){
+					BaumanFormatVersion bmfv = loadFromDefStream(new FileInputStream(f));
+					//System.out.println("mapping " + f.getAbsolutePath() + " to BM:" + bmfv.valid_for);
+					bm_formats.add(bmfv);
+				}
+			}
+			else if( ctxldr.getResource(bm_version) != null && !bm_version.endsWith(".def")){
+				for(String fname: IOUtils.readLines(ctxldr.getResourceAsStream(bm_version), StandardCharsets.UTF_8)){
+					if (fname.endsWith(".def"))
+					bm_formats.add(loadFromDefStream(ctxldr.getResourceAsStream(bm_version+"/"+fname)));
+				}
+			}
+			else if( new File(bm_version).isFile() ){
+				bm_formats.add(loadFromDefStream(new FileInputStream(bm_version)));
+			}
+			else{
+				bm_formats.add(loadFromDefStream(ctxldr.getResourceAsStream(bm_version)));
+			}
 		}
     }
+    protected BaumanFormatVersion loadFromDefStream(InputStream defs) throws IOException{
+		BufferedReader br=new BufferedReader(new InputStreamReader(defs));
+		BaumanFormatVersion bmfv = new BaumanFormatVersion(br);
+		br.close();
+		return bmfv;
+    }
+
+    protected BaumanFormatVersion getBestVersion(String bmversion) throws FormatAdapterException{
+    	
+		BaumanFormatVersion res=null;
+		String useversion = bmversion != null && !bmversion.isEmpty() ? bmversion : DEFAULT_VERSION;
+		for(BaumanFormatVersion v:bm_formats){
+			if (v.valid_for.equals(useversion)){
+				res = v;
+				break;
+			}
+		}
+		if (res == null && !useversion.equalsIgnoreCase(DEFAULT_VERSION)){
+			useversion = DEFAULT_VERSION;
+			for(BaumanFormatVersion v:bm_formats){
+				if (v.valid_for.equals(useversion)){
+					res = v;
+					break;
+				}
+			}
+			
+		}
+		if (res == null){
+			throw new FormatAdapterException(bmversion + " not available!");
+		}
+    	return res;
+    }
     
-	public void write(DocumentPart doc, ParseContext ctx) throws FormatAdapterException
+	public void write(DocumentPart doc, ParseContext ctx, String bmversion) throws FormatAdapterException
 	{
 			try {
-				for(BaumanFormatVersion v:bm_formats){
-					if (v.valid_for.equals(DEFAULT_VERSION)){
-						ctx.bmfv = v;
-						break;
-					}
-				}
-
+				ctx.bmfv = getBestVersion(bmversion);
 				emitStart(ctx);
 				ctx.lineCounter = 0;
 				ArrayList<String> linemarkers = new ArrayList<String>();

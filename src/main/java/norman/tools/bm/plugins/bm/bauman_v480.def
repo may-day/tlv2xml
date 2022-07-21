@@ -35,11 +35,11 @@
 #A53,discountedName,calced_discounted_cost,calced_discounted_revenue
 #A54,boqName,calced_all_cost,calced_all_revenue
 #A20,calced_material_cost,calced_material_revenue
-#A40,calced_wage_cost,calced_wage_revenue,unknown_7
+#A40,calced_wage_cost,calced_wage_revenue,calced_wage_hours
 #A0[1-9],mgName,unknown_1,mgCalcListpriceBased,mgOverheadCostFactor,mgFactor1,mgFactor2,mgFactor3,calced_cost,calced_revenue
 #A1[0-9],mgName,unknown_1,mgCalcListpriceBased,mgOverheadCostFactor,mgFactor1,mgFactor2,mgFactor3,calced_cost,calced_revenue
-#A2[1-9],wgName,unknown_1,wgTimeFactor,wgCostPerHour,wgOverheadCostFactor,wgFactor1,wgFactor2,wgPricePerHourHardCoded,calced_cost,calced_revenue,unknown_2
-#A3[0-9],wgName,unknown_1,wgTimeFactor,wgCostPerHour,wgOverheadCostFactor,wgFactor1,wgFactor2,wgPricePerHourHardCoded,calced_cost,calced_revenue,unknown_2
+#A2[1-9],wgName,unknown_1,wgTimeFactor,wgCostPerHour,wgOverheadCostFactor,wgFactor1,wgFactor2,wgPricePerHourHardCoded,calced_cost,calced_revenue,calced_hours
+#A3[0-9],wgName,unknown_1,wgTimeFactor,wgCostPerHour,wgOverheadCostFactor,wgFactor1,wgFactor2,wgPricePerHourHardCoded,calced_cost,calced_revenue,calced_hours
 #TPX,projecttext
 #TT1,t1text
 #TT2,t2text

@@ -1,4 +1,3 @@
-
 package norman.tools.bm.plugins.bm;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -7,17 +6,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import norman.tools.bm.DocumentException;
-import norman.tools.bm.DocumentPartException;
 import norman.tools.bm.JBMDocumentNames;
-import norman.tools.bm.document.AbstractDocumentPart;
 import norman.tools.bm.document.DocumentPart;
-import norman.tools.bm.document.PropertyMissingException;
 import norman.tools.bm.plugins.DocumentFormatAdapter;
 import norman.tools.bm.plugins.FormatAdapterException;
 
@@ -49,13 +40,14 @@ implements DocumentFormatAdapter
 	boolean appendTextTooMany;
 	boolean doSkipUnknownLineTypes;
 	boolean doUseDummies;
-
+	String fallbackVersion;
 	
 	public BaumanFormatAdapter(boolean skipJunk,
 			boolean appendTextTooMany,
 			boolean skipUnknownLineTypes, 
 			boolean useDummies,
-			String bm_versions[])
+			String bm_versions[],
+			String fallbackVersion)
 	 throws IOException
 	{
 		super(bm_versions);
@@ -63,14 +55,14 @@ implements DocumentFormatAdapter
 		doSkipUnknownLineTypes = skipUnknownLineTypes;
 		doUseDummies = useDummies;
 		this.appendTextTooMany = appendTextTooMany;
-		
+		this.fallbackVersion = fallbackVersion;
 	}
 
 	public void read(InputStream is, DocumentPart doc) throws FormatAdapterException
 	{
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(is, "ISO-8859-1"));
-			ParseContext ctx = new ParseContext(bm_formats, doc, reader);
+			ParseContext ctx = new ParseContext(bm_formats, fallbackVersion, doc, reader);
 			
 			String line;
 
@@ -96,13 +88,13 @@ implements DocumentFormatAdapter
 	}
 
 
-	public void write(java.io.OutputStream os, DocumentPart doc) throws FormatAdapterException
+	public void write(java.io.OutputStream os, DocumentPart doc, String bmversion) throws FormatAdapterException
 	{
 		BufferedWriter writer;
 		try {
 			writer = new BufferedWriter(new OutputStreamWriter(os, "ISO-8859-1"));
-			ParseContext ctx = new ParseContext(bm_formats, doc, writer);
-			write(doc, ctx);
+			ParseContext ctx = new ParseContext(bm_formats, fallbackVersion, doc, writer);
+			write(doc, ctx, bmversion);
 			writer.flush();
 			
 		} catch (UnsupportedEncodingException ex) {
@@ -185,6 +177,7 @@ implements DocumentFormatAdapter
 	private void doParse (String line, ParseContext ctx)
 	throws BMFormatException, DocumentException
 	{
+
 		// splitte String, um den Marker zu extrahieren
 		String[] parts = line.split(FIELDSEPARATOR, -1);
 
@@ -198,6 +191,8 @@ implements DocumentFormatAdapter
 		if (fields != null){
 			if (JBMDocumentNames.TEXT.equals(partname))
 				parseMemo (fields, JBMDocumentNames.TEXT, parts, ctx);
+			else if (JBMDocumentNames.EFB.equals(partname))
+				parseEFB (fields, JBMDocumentNames.EFB, parts, ctx);
 			else if (JBMDocumentNames.POSITIONS.equals(partname))
 				parsePosition (fields, JBMDocumentNames.POSITIONS, parts, ctx);
 			else if ("POSITIONEXTENSIONS".equals(partname))
@@ -335,6 +330,55 @@ implements DocumentFormatAdapter
 
 	}
 
+	private void parseEFB (String[] fields, String partName, String[] parts, ParseContext ctx)
+	throws BMFormatException, DocumentException
+	{
+		// extrahiere den relevanten part
+		// partName sieht so aus: part.subpart.subsubpart etc
+		int i=0;
+		DocumentPart docpart = ctx.doc.addPart (partName);
+
+		int textlines = -1;
+
+
+		try {
+			// an pos 1 steht die Anzahl der folgenden Textzeilen
+			textlines = Integer.parseInt(parts[1]);
+
+		} catch (NumberFormatException e) {
+			textlines = -1; // relaxed mode
+		} catch (Exception e) {
+			// hier kommen wir hin, falls wir zu wenig felder in parts haben
+			if (doUseDummies) {
+				for (; i < fields.length; i++) {
+					docpart.putProperty (fields[i], 
+							null,  // dem DocumentPart ist es überlassen, ein sinnvollen defaultwert zu wählen
+							false, // lasse dirty state unverändert
+							false); // wert kommt nicht aus Datenstrom
+				}
+			}
+		}
+		i = 0;
+		StringBuffer text = new StringBuffer();
+		String line=null;
+		while (i < textlines || textlines == -1) {
+			line = ctx.nextLine();
+			i++;
+			if (textlines != -1 || !isQualifiedLine(line, ctx)) {
+				text.append(line).append('\n');
+			}
+			if (textlines == -1 && isQualifiedLine(line, ctx))
+				break;
+		}
+
+		//System.out.println (fields[0]+"-textlines="+textlines+"\ntext:>"+text.toString()+"<");
+		docpart.putProperty (fields[0], text, true, true); 
+
+		if (textlines == -1 && line != null)
+			ctx.pushBack (line);
+
+	}
+	
 	private void parsePosition (String[] fields, String partName, String[] parts, ParseContext ctx)
 	throws DocumentException
 	{
@@ -388,13 +432,16 @@ implements DocumentFormatAdapter
 
 		int allTextLines = -1;
 		int shortTextLines = -1;
-
+		int idx;
+		
 		try {
-			allTextLines = Integer.parseInt(parts[fields.length]);
+			idx= ctx.bmfv.index(fields, "allTextLinesCount"); // ist nicht in allen BM Versionen mehr vorhanden, z.B. ab Version 5.40
+			allTextLines = Integer.parseInt(parts[idx]);
 		} catch (Exception e) {}
 
 		try {
-			shortTextLines = Integer.parseInt(parts[fields.length -1]);
+			idx= ctx.bmfv.index(fields, "shortTextLinesCount");
+			shortTextLines = Integer.parseInt(parts[idx]);
 		} catch (Exception e) {}
 
 		// die Position merken wir uns, falls noch #F1, #F2 oder Text kommt
@@ -406,7 +453,7 @@ implements DocumentFormatAdapter
 		ctx.lastProcessedPosition (docpart, allTextLines, shortTextLines);
 
 	}
-
+/*
 	private void showParts (String[] fields, String[] parts)
 	{
 		for (int i=0; i < fields.length; i++) {
@@ -416,7 +463,7 @@ implements DocumentFormatAdapter
 				System.out.println(fields[i]+".: " + parts[i+1]);
 		}
 	}
-
+*/
 	private void storeVerbatim (String marker, String partName, String line, ParseContext ctx)
 	throws BMFormatException, DocumentException
 	{
