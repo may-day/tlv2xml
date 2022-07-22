@@ -12,7 +12,7 @@ import norman.tools.bm.plugins.bm.XMLBaumanFormatAdapter;
 
 public class tlv2xml {
 
-	public static String [] knownVersions = new String[]{"norman/tools/bm/plugins/bm"};
+	public static String [] knownVersions = new String[]{"tlvdef"};
 	/**
 	 * @param args
 	 * @throws Exception 

@@ -7,7 +7,15 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -370,25 +378,37 @@ public abstract class AbstractBaumanAdapter {
 		for(String bm_version:bm_versions){
 			// bm_version ist ein Pfad zu einer Resource/File, die entweder eine .def Datei ist oder
 			// ein Verzeichnis (dann werden alle .def dateien darin glelesen)
-			if( new File(bm_version).isDirectory() ){
-				for(File f: FileUtils.listFiles(new File(bm_version), new String[]{"def"}, false)){
+			File file = new File(bm_version);
+			// folder in filesystem
+			if( file.isDirectory() ){
+				for(File f: FileUtils.listFiles(file, new String[]{"def"}, false)){
 					BaumanFormatVersion bmfv = loadFromDefStream(new FileInputStream(f));
 					//System.out.println("mapping " + f.getAbsolutePath() + " to BM:" + bmfv.valid_for);
 					bm_formats.add(bmfv);
 				}
 			}
-			else if( ctxldr.getResource(bm_version) != null && !bm_version.endsWith(".def")){
-				for(String fname: IOUtils.readLines(ctxldr.getResourceAsStream(bm_version), StandardCharsets.UTF_8)){
-					if (fname.endsWith(".def"))
-					bm_formats.add(loadFromDefStream(ctxldr.getResourceAsStream(bm_version+"/"+fname)));
+			// file in filesystem
+			else if (file.isFile()){
+				BaumanFormatVersion bmfv = loadFromDefStream(new FileInputStream(file));
+				//System.out.println("mapping " + f.getAbsolutePath() + " to BM:" + bmfv.valid_for);
+				bm_formats.add(bmfv);
+			}else{
+				URL url = ctxldr.getResource(bm_version);
+				if (url != null){
+					try (FileSystem fs = FileSystems.newFileSystem(URI.create(url.toString()), Collections.emptyMap())) {
+						Files.walk(fs.getPath(bm_version))
+								.filter(Files::isRegularFile)
+								.filter(f -> f.toString().endsWith(".def"))
+								.forEach(f -> {
+									try{
+										var bmvf=loadFromDefStream(ctxldr.getResourceAsStream(f.toString()));
+										bm_formats.add(bmvf);
+									}catch(IOException x){}
+								});
+					}					
+										
 				}
-			}
-			else if( new File(bm_version).isFile() ){
-				bm_formats.add(loadFromDefStream(new FileInputStream(bm_version)));
-			}
-			else{
-				bm_formats.add(loadFromDefStream(ctxldr.getResourceAsStream(bm_version)));
-			}
+		}
 		}
     }
     protected BaumanFormatVersion loadFromDefStream(InputStream defs) throws IOException{

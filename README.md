@@ -8,7 +8,7 @@ An example of such is here in the repo (tt.xsl).
 Example call:
 
 ```shell
-java -jar tlv2xml.0.0.1,jar sample.tlv result.xml
+java -jar tlv2xml-0.0.6-cli.jar in.tlv out.xml "BauManWin V5.50"
 ```
 
 No schema yet.

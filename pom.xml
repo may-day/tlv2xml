@@ -7,19 +7,19 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <build>
-    <resources>
+    <!--resources>
       <resource>
         <directory>src/main/java</directory>
         <excludes>
           <exclude>**/*.java</exclude>
         </excludes>
       </resource>
-    </resources>
-    <testResources>
+    </resources-->
+    <!--testResources>
     <testResource>
 				<directory>${basedir}/src/test/resources</directory>
     </testResource>
-    </testResources>
+    </testResources-->
     <plugins>
       <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -36,11 +36,63 @@
 				<configuration>
 					<archive>
 						<manifest>
+              <addClasspath>true</addClasspath>
 							<mainClass>norman.tools.tlv2xml</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
 			</plugin>
+      <!--plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.6</version>
+      </plugin-->
+      <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.4.1</version>
+        <configuration>
+          <descriptors>
+            <descriptor>src/assemblies/tlvdef.xml</descriptor>
+            <descriptor>src/assemblies/cli.xml</descriptor>
+          </descriptors>
+          <archive>
+            <manifest>
+              <mainClass>norman.tools.tlv2xml</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id> <!-- this is used for inheritance merges -->
+            <phase>package</phase> <!-- bind to the packaging phase -->
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+       </plugin>
+      <!--plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.3.0</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <manifestEntries>
+                    <Main-Class>norman.tools.tlv2xml</Main-Class>
+                  </manifestEntries>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin-->
       </plugins>
   </build>
   <dependencies>
