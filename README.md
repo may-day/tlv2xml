@@ -1,5 +1,6 @@
 TLV2XML
 =======
+[![Java CI with Maven](https://github.com/may-day/tlv2xml/actions/workflows/maven.yml/badge.svg)](https://github.com/may-day/tlv2xml/actions/workflows/maven.yml)
 
 Convert TLV Files (Baumanager Leistungsverzeichnis) to xml format.
 The xml format is pretty straight forward. I kept all unknown (to me at least) fields in the output, so one might create a XML2TLV :).
