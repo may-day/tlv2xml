@@ -13,12 +13,14 @@ public class MaterialGroupCalcPage  extends JBMDocumentPart{
 		"mgFactor1", 
 		"mgFactor2", 
 		"mgFactor3",
+		"warrantyCostCalculation",
+		"efbMark",
 		"calced_cost",
 		"calced_revenue"
 	};
 
 
-	StringBuffer mgName, mgCalcListpriceBased, mgOverheadCostFactor, 
+	StringBuffer mgName, mgCalcListpriceBased, mgOverheadCostFactor, warrantyCostCalculation, efbMark,
 	mgFactor1, mgFactor2, mgFactor3, calced_cost, calced_revenue;
 
 	public static final String Listenpreiskalkulation = "L";
@@ -28,6 +30,8 @@ public class MaterialGroupCalcPage  extends JBMDocumentPart{
 		mgName = new StringBuffer();
 		mgCalcListpriceBased = new StringBuffer();
 		mgOverheadCostFactor = new StringBuffer();
+		warrantyCostCalculation = new StringBuffer();
+		efbMark = new StringBuffer();
 		mgFactor1 = new StringBuffer();
 		mgFactor2 = new StringBuffer();
 		mgFactor3 = new StringBuffer();
@@ -37,6 +41,8 @@ public class MaterialGroupCalcPage  extends JBMDocumentPart{
 		putProperty("mgName", new StringProperty(mgName, true, false));
 		putProperty("mgCalcListpriceBased", new StringProperty(mgCalcListpriceBased, true, false));
 		putProperty("mgOverheadCostFactor", new StringProperty(mgOverheadCostFactor , true, false));
+		putProperty("warrantyCostCalculation", new StringProperty(warrantyCostCalculation , true, false));
+		putProperty("efbMark", new StringProperty(efbMark , true, false));
 		putProperty("mgFactor1", new StringProperty(mgFactor1, true, false));
 		putProperty("mgFactor2", new StringProperty(mgFactor2, true, false));
 		putProperty("mgFactor3", new StringProperty(mgFactor3, true, false));
@@ -68,6 +74,8 @@ class DefaultMaterialGroupCalcPage  extends MaterialGroupCalcPage{
 		super();
 		set("mgCalcListpriceBased", "L");
 		set("mgOverheadCostFactor", "0.0");
+		set("warrantyCostCalculation", "");
+		set("efbMark", "");
 		set("mgFactor1", "0,0");
 		set("mgFactor2", "0,0");
 		set("mgFactor3", "0,0");

@@ -34,7 +34,7 @@ public class CalcContext extends JBMDocumentPart
 		"discountedName","calced_discounted_cost","calced_discounted_revenue",
 		"boqName","calced_all_cost,calced_all_revenue",
 		"calced_material_cost","calced_material_revenue",
-		"calced_wage_cost","calced_wage_revenue"
+		"calced_wage_cost","calced_wage_revenue", "calced_wage_hours"
 	};
 
 
@@ -64,7 +64,7 @@ public class CalcContext extends JBMDocumentPart
 	discountedName,calced_discounted_cost,calced_discounted_revenue,
 	boqName,calced_all_cost,calced_all_revenue,
 	calced_material_cost,calced_material_revenue,
-	calced_wage_cost,calced_wage_revenue;
+	calced_wage_cost,calced_wage_revenue,calced_wage_hours;
 
 	public HashMap<Integer, MaterialGroupCalcPage> mg = new HashMap<Integer, MaterialGroupCalcPage>();
 	public HashMap<Integer, WageGroupCalcPage> lg = new HashMap<Integer, WageGroupCalcPage>();
@@ -156,7 +156,7 @@ public class CalcContext extends JBMDocumentPart
 		calced_material_revenue = new StringBuffer();
 		calced_wage_cost = new StringBuffer();
 		calced_wage_revenue = new StringBuffer();
-
+		calced_wage_hours = new StringBuffer();
 
 		putProperty("calcpageNumber", new StringProperty(calcpageNumber, true, false));
 		putProperty("dateCalcpageModify", new StringProperty(dateCalcpageModify, true, false));
@@ -240,7 +240,8 @@ public class CalcContext extends JBMDocumentPart
 		putProperty("calced_material_revenue", new StringProperty(calced_material_revenue, true, false));
 		putProperty("calced_wage_cost", new StringProperty(calced_wage_cost, true, false));
 		putProperty("calced_wage_revenue", new StringProperty(calced_wage_revenue, true, false));
-
+		putProperty("calced_wage_hours", new StringProperty(calced_wage_hours, true, false));
+		
 		NumberFormat formatter = new DecimalFormat("00");
 		for (int i=1; i < 20; i++){
 			String id = formatter.format(i);
