@@ -22,7 +22,7 @@ import norman.tools.bm.plugins.FormatAdapterException;
 //import norman.tools.bm.plugins.bm.ParseContext;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.ProcessingInstruction;
+//import org.w3c.dom.ProcessingInstruction;
 
 
 
@@ -62,8 +62,8 @@ public class XMLBaumanFormatAdapter extends AbstractBaumanAdapter
         org.w3c.dom.Document document = builder.newDocument();
         Element root = document.createElement("lv");
         document.appendChild(root);
-        ProcessingInstruction pi = document.createProcessingInstruction("xml-stylesheet", "type=\"text/xsl\" encoding=\"UTF-8\" href=\"tt.xsl\" version=\"1.0\"");
-        root.getParentNode().insertBefore(pi, root);
+        // ProcessingInstruction pi = document.createProcessingInstruction("xml-stylesheet", "type=\"text/xsl\" encoding=\"UTF-8\" href=\"tt.xsl\" version=\"1.0\"");
+        // root.getParentNode().insertBefore(pi, root);
         xmlctx.root = root;
 
         xmlctx.header = document.createElement(JBMDocumentNames.HEADER);

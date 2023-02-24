@@ -2,9 +2,11 @@
 .settings
 .project
 target
+compare
 *~
 
 *.crt
 .vscode
 deploy.sh
 *.tlv
+httpd.py
