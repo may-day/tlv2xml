@@ -138,7 +138,6 @@
       <Field name="goodsgroup"/>
       <Field name="ordernumber"/>
       <Field name="name"/>
-      <!--Field name="formfeed"/-->
       <Field name="supplier"/>
       <Field name="suppliernumber"/>
       <Field name="manufacturer"/>

@@ -17,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -564,9 +565,22 @@ public abstract class AbstractBaumanAdapter {
 
 				textlen = shortTextLines.length-1 + longTextLines.length-1;
 				emitPositionMandatoryStart(marker, posPartName, fields, ctx);
-				assembleLine (marker, fields, docpart, FIELDSEPARATOR, "", 2, ctx); // ohne textlänge
-				emitField(marker, "shortTextLinesCount", (shortTextLines.length < 2 ? "" : ""+(shortTextLines.length-1)), ctx);
-				emitField(marker, "allTextLinesCount", (textlen == 0 ? "" : ""+textlen), ctx);
+				int lenless = 0;
+				boolean shortCount=false;
+				boolean allCount=false;
+				if (Arrays.asList(fields).contains("shortTextLinesCount")){
+					lenless++;
+					shortCount=true;
+				}
+				if (Arrays.asList(fields).contains("allTextLinesCount")){
+					lenless++;
+					allCount=true;
+				}
+				assembleLine (marker, fields, docpart, FIELDSEPARATOR, "", lenless, ctx); // ohne textlänge
+				if (shortCount)
+					emitField(marker, "shortTextLinesCount", (shortTextLines.length < 2 ? "" : ""+(shortTextLines.length-1)), ctx);
+				if (allCount)
+					emitField(marker, "allTextLinesCount", (textlen == 0 ? "" : ""+textlen), ctx);
 				emitPositionMandatoryEnd(marker, posPartName, fields, ctx);
 
 				// haben wir #F{1|2} Positionen?

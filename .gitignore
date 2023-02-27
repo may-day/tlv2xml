@@ -8,5 +8,10 @@ compare
 *.crt
 .vscode
 deploy.sh
+convdummy.sh
 *.tlv
 httpd.py
+*.html
+*.diff
+*.xml
+!pom.xml
