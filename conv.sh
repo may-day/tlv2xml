@@ -1,8 +1,8 @@
 #! /bin/bash
 # conv.sh indir outdir bmtag
-indir=$1
-outdir=$2
-bmtag=$3
+bmtag=$1
+indir=${2:-in${1}}
+outdir=${3:-out${1}}
 
 for f in $indir/*.tlv ;
 do

@@ -27,7 +27,7 @@ public class tlv2xml {
 		}
 	}
 	
-	public static void convert(InputStream xmlstream, String outfile, String [] defVersions, String outversion) throws Exception {
+	public static void convert(InputStream tlvstream, String outfile, String [] defVersions, String outversion) throws Exception {
 			OutputStream os;
 			if ("/dev/null".equals(outfile))
 			{
@@ -37,11 +37,11 @@ public class tlv2xml {
 				};
 			}else
 				os = new FileOutputStream(outfile);
-			convert(xmlstream, os, defVersions, outversion);
+			convert(tlvstream, os, defVersions, outversion);
 			os.close();
 	}
 
-	public static void convert(InputStream xmlstream, OutputStream os, String [] defVersions, String outversion) throws Exception {
+	public static void convert(InputStream tlvstream, OutputStream os, String [] defVersions, String outversion) throws Exception {
 		LV lv = new LV();
 		
 		BaumanFormatAdapter bfa = new BaumanFormatAdapter ( true, //skipJunk,
@@ -52,7 +52,7 @@ public class tlv2xml {
 				, ">" 
 		);
 		XMLBaumanFormatAdapter xbfa = new XMLBaumanFormatAdapter (defVersions);
-		bfa.read ( xmlstream, lv);
+		bfa.read ( tlvstream, lv);
 		xbfa.write ( os, lv, outversion);
 	}
 }

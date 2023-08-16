@@ -28,6 +28,7 @@ import norman.tools.bm.DocumentPartException;
 import norman.tools.bm.JBMDocumentNames;
 import norman.tools.bm.document.AbstractDocumentPart;
 import norman.tools.bm.document.DocumentPart;
+import norman.tools.bm.document.DocumentPartMissingException;
 import norman.tools.bm.document.PropertyMissingException;
 import norman.tools.bm.plugins.FormatAdapterException;
 
@@ -82,6 +83,7 @@ class BaumanFormatVersion implements Comparable<BaumanFormatVersion>{
 		}
 	}
 	String getPartname(String marker){
+		// System.out.println("getPartname by marker: " + marker);
 		for(Pattern pat:qline_partname.keySet()){
 			if (pat.matcher(marker).matches()){
 				String partname= qline_partname.get(pat);
@@ -285,6 +287,7 @@ public abstract class AbstractBaumanAdapter {
     static final String k10 = "#K10";
     static final String k11 = "#K11";
     static final String k12 = "#K12";
+    static final String k13 = "#K13";
 
     /* Kalkblatt diverse Faktoren, Zu-und Abschläge*/
     static final String a1 = "#A1 ";
@@ -331,6 +334,21 @@ public abstract class AbstractBaumanAdapter {
     static final String a37 = "#A37";
     static final String a38 = "#A38";
     static final String a39 = "#A39";
+    static final String a40 = "#A40";
+    static final String a41 = "#A41";
+    static final String a42 = "#A42";
+    static final String a43 = "#A43";
+    static final String a44 = "#A44";
+    static final String a45 = "#A45";
+    static final String a46 = "#A46";
+    static final String a47 = "#A47";
+    static final String a48 = "#A48";
+    static final String a49 = "#A49";
+    static final String a50 = "#A50";
+    static final String a51 = "#A51";
+    static final String a52 = "#A52";
+    static final String a53 = "#A53";
+    static final String a54 = "#A54";
 
 
     /* Text Projekt */
@@ -452,8 +470,12 @@ public abstract class AbstractBaumanAdapter {
 				emitStart(ctx);
 				ctx.lineCounter = 0;
 				ArrayList<String> linemarkers = new ArrayList<String>();
-				for(int i=1; i < 13; i++) linemarkers.add(String.format("#K%1$02d", i));
+				for(int i=1; i <= 16; i++) linemarkers.add(String.format("#K%1$02d", i));
+				for(int i=0; i <= 2; i++) linemarkers.add(String.format("#B%1$02d", i));
 				for(int i=0; i <= 54; i++) linemarkers.add(String.format("#A%1$02d", i));
+				for(int i=0; i <= 40; i++) linemarkers.add(String.format("#M%1$02d", i));
+				for(int i=0; i <= 40; i++) linemarkers.add(String.format("#L%1$02d", i));
+				for(int i=0; i <= 40; i++) linemarkers.add(String.format("#G%1$02d", i));
 				for (String marker: linemarkers){
 					
 					writeLine (marker, ctx);
@@ -499,12 +521,18 @@ public abstract class AbstractBaumanAdapter {
 	throws Exception
 	{
 		String partName = ctx.bmfv.getPartname(marker);
-		String[] fields = ctx.bmfv.getLinedef(marker);
+		if (partName != null){
+			String[] fields = ctx.bmfv.getLinedef(marker);
 
-		emitLineStart(marker, partName, fields, ctx);
-		DocumentPart docpart = getDocPart (partName, ctx);
-		assembleLine (marker, fields, docpart, FIELDSEPARATOR, LINESEPARATOR, 0, ctx);
-		emitLineEnd(marker, partName, fields, ctx);
+			emitLineStart(marker, partName, fields, ctx);
+			try{
+				DocumentPart docpart = getDocPart (partName, ctx);
+				assembleLine (marker, fields, docpart, FIELDSEPARATOR, LINESEPARATOR, 0, ctx);
+			}catch(DocumentPartMissingException dpme){
+				// System.out.println("DocumentPart "+partName+" not found ... skip writing it");
+			}
+			emitLineEnd(marker, partName, fields, ctx);
+		}
 	}
 
 	private void writeMemo (String marker, ParseContext ctx)

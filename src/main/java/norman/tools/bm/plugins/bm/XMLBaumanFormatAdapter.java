@@ -27,10 +27,10 @@ import org.w3c.dom.Element;
 
 
 class XMLParseContext extends ParseContext{
-	public Element root, header, calcpage, wg, mg, text, positions, current, currentpos;
+	public Element root, header, calcpage, wg, mg, og, text, positions, current, currentpos;
 	public XMLParseContext(ArrayList<BaumanFormatVersion> bmversions, String fallbackVersion, DocumentPart doc){
 		super(bmversions, fallbackVersion, doc, null, null);
-		root = header = calcpage = wg = mg = text = positions = current = currentpos = null;
+		root = header = calcpage = wg = mg = og = text = positions = current = currentpos = null;
 	}
 
 };
@@ -77,8 +77,10 @@ public class XMLBaumanFormatAdapter extends AbstractBaumanAdapter
 
         xmlctx.mg = document.createElement("MaterialGroups");
         xmlctx.wg = document.createElement("WageGroups");
+        xmlctx.og = document.createElement("OverheadGroups");
         xmlctx.calcpage.appendChild(xmlctx.mg);
         xmlctx.calcpage.appendChild(xmlctx.wg);
+        xmlctx.calcpage.appendChild(xmlctx.og);
     }
     
 	protected void emitLineStart(String marker, String partName, String[] fields, ParseContext ctx)throws Exception{
@@ -96,6 +98,12 @@ public class XMLBaumanFormatAdapter extends AbstractBaumanAdapter
 	        xmlctx.wg.appendChild(wgN);
 	        wgN.setAttribute("id", partName.substring(partName.indexOf('.')+1));
 	        xmlctx.current = wgN;
+		}
+		else if (partName.startsWith(JBMDocumentNames.CALCPAGE + ".og")){
+	        Element ogN = xmlctx.root.getOwnerDocument().createElement("og");
+	        xmlctx.og.appendChild(ogN);
+	        ogN.setAttribute("id", partName.substring(partName.indexOf('.')+1));
+	        xmlctx.current = ogN;
 		}
 		else xmlctx.current = null;
 	}
