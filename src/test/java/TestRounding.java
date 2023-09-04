@@ -1,3 +1,4 @@
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -124,6 +125,11 @@ public class TestRounding{
 		System.out.println(x4.toPlainString());
 		*/
 	}
+	@Test
+	public void testSplit(){
+		String parts[] = {"A", "B",""};
+		assertArrayEquals(parts, "A:B:".split(":",3));
+	}	
 	@Test
 	public void testCalc(){
 		

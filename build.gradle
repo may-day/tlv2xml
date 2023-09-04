@@ -1,0 +1,95 @@
+plugins {
+  // id 'java-library'
+  id 'application'
+  id 'maven-publish'
+}
+
+group = 'norman.tools'
+version = '0.0.12'
+
+java {
+  sourceCompatibility = '17'
+  withSourcesJar()
+}
+
+application {
+  mainClass = 'norman.tools.tlv2xml'
+}
+repositories {
+    // Use Maven Central for resolving dependencies.
+    mavenLocal()
+    mavenCentral()
+}
+
+
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            // groupId = 'norman.tools'
+            // artifactId = 'tlv2xml'
+            // version = '0.0.11'
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+          name = "GitHubPackages"
+          url = "https://maven.pkg.github.com/may-day/tlv2xml"
+          credentials {
+            username = System.getenv("GITHUB_ACTOR")
+            password = System.getenv("GITHUB_TOKEN")
+          }
+        }
+    }
+}
+
+
+
+
+dependencies {
+    // This dependency is used by the application.
+
+  implementation 'commons-io:commons-io:2.13.0'
+}
+
+testing {
+    suites {
+        // Configure the built-in test suite
+        test {
+            // Use JUnit Jupiter test framework
+            useJUnitJupiter('5.9.2')
+        }
+    }
+}
+// Apply a specific Java toolchain to ease working on different environments.
+
+def zipdef = tasks.register("zipdef", Zip){
+    // archiveFileName = "my-distribution.zip"
+    archiveClassifier = "tlvdef"
+    destinationDirectory = layout.buildDirectory.dir('distributions')
+    from layout.projectDirectory.dir("tlvdef")
+    into "tlvdef"
+ }
+
+def clijar = tasks.register("clijar", Jar){
+    archiveClassifier = "cli"
+    from sourceSets.main.output
+    dependsOn configurations.runtimeClasspath
+    from {
+        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
+    }    
+    from (layout.projectDirectory.dir("tlvdef")) {
+      into 'tlvdef'
+    }
+    manifest {
+        attributes("Implementation-Title": "Gradle",
+                   "Implementation-Version": archiveVersion,
+                   "Main-Class": application.mainClass)
+    }
+}
+artifacts {
+  archives zipdef
+  archives clijar
+}
+

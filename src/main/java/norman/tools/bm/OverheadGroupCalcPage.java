@@ -36,7 +36,7 @@ public class OverheadGroupCalcPage  extends JBMDocumentPart{
 		putProperty("calced_overhead_cost", new StringProperty(calced_overhead_cost, true, false));
 		putProperty("calced_overhead_revenue", new StringProperty(calced_overhead_revenue, true, false));
 
-
+	}
 	public String GemeinkostenName(){
 		return get("ogName");
 	}
@@ -62,7 +62,7 @@ public class OverheadGroupCalcPage  extends JBMDocumentPart{
 
 }
 
-class DefaultOverhreadGroupCalcPage  extends OverheadGroupCalcPageGroupCalcPage{
+class DefaultOverhreadGroupCalcPage  extends OverheadGroupCalcPage{
 	public DefaultOverhreadGroupCalcPage() throws PropertyMissingException{
 
 		super();

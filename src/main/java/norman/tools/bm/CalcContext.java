@@ -68,8 +68,10 @@ public class CalcContext extends JBMDocumentPart
 
 	public HashMap<Integer, MaterialGroupCalcPage> mg = new HashMap<Integer, MaterialGroupCalcPage>();
 	public HashMap<Integer, WageGroupCalcPage> lg = new HashMap<Integer, WageGroupCalcPage>();
+	public HashMap<Integer, OverheadGroupCalcPage> og = new HashMap<Integer, OverheadGroupCalcPage>();
 	DefaultMaterialGroupCalcPage defaultMG; 
 	DefaultWageGroupCalcPage defaultWG; 
+	DefaultOverhreadGroupCalcPage defaultOG;
 
 	public CalcContext() throws DocumentException
 	{
@@ -251,7 +253,8 @@ public class CalcContext extends JBMDocumentPart
 
 		defaultMG = new DefaultMaterialGroupCalcPage(); 
 		defaultWG = new DefaultWageGroupCalcPage();
-		
+		defaultOG = new DefaultOverhreadGroupCalcPage();
+
 		putProperty("unknown_1", new StringProperty(new StringBuffer(""), true, false));
 		putProperty("unknown_2", new StringProperty(new StringBuffer(""), true, false));
 		putProperty("unknown_3", new StringProperty(new StringBuffer(""), true, false));
@@ -267,6 +270,8 @@ public class CalcContext extends JBMDocumentPart
 			return new MaterialGroupCalcPage();
 		}else if (kind.startsWith("wg")){
 			return new WageGroupCalcPage();
+		}else if (kind.startsWith("og")){
+			return new OverheadGroupCalcPage();
 		}
 		return super.createDocumentPart(kind);
 	}
@@ -280,6 +285,17 @@ public class CalcContext extends JBMDocumentPart
 			
 		if (g == null)
 			g = defaultMG;
+		return g;
+	}
+
+	OverheadGroupCalcPage getOG(String overheadGroup){
+		OverheadGroupCalcPage g=null;
+		try{
+			g = og.get(Integer.valueOf(overheadGroup));
+		}catch(NumberFormatException ex){}
+			
+		if (g == null)
+			g = defaultOG;
 		return g;
 	}
 

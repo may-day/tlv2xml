@@ -41,9 +41,11 @@ class BaumanFormatVersion implements Comparable<BaumanFormatVersion>{
 	public int valid_fieldindex;
 	public HashMap<Pattern, String> qline_partname;
 	public HashMap<Pattern, String[]> qline_linedef;
+	public HashMap<String, HashMap<String, String>> qline_partname_para;
 	public BaumanFormatVersion(BufferedReader def) throws IOException{
 		qline_partname= new HashMap<Pattern, String>();
 		qline_linedef= new HashMap<Pattern, String[]>();
+		qline_partname_para = new HashMap<>();
 		valid_fieldindex=0;
 		String l;
 		while ((l=def.readLine())!=null){
@@ -54,10 +56,22 @@ class BaumanFormatVersion implements Comparable<BaumanFormatVersion>{
 				valid_fieldname = parts[2];
 			}
 			else if (l.startsWith("!")){
-				String parts[] = l.split(":",2);
+				String parts[] = l.split(":",3);
 				String partname = parts[0].substring(1);
 				for(String ql: parts[1].split(",")){
 					qline_partname.put(Pattern.compile(ql), partname);
+				}
+				if (parts.length == 3){
+				  var para=parts[2];
+				  for(String p :para.split(";")){
+					var pparts=p.split("=");
+					var pname=pparts[0];
+					var pval=pparts[1];
+					if (!qline_partname_para.containsKey(pname)){
+						qline_partname_para.put(partname, new HashMap<>());
+					}
+					qline_partname_para.get(partname).put(pname, pval);
+				  }
 				}
 			}
 			else if (l.startsWith("#")){
@@ -92,10 +106,14 @@ class BaumanFormatVersion implements Comparable<BaumanFormatVersion>{
 					if (m.matches()){
 						String markernum=m.group(1);
 						if (markernum.length()>0){
-							Integer offset=0;
-							// @@ urrrg, find better way - maybe best to encode offset in the DEF file?
-							if (partname.startsWith("CALCPAGE.lg")) offset = 20;
-							return String.format(partname, Integer.valueOf(markernum) - offset);
+							var offset = 0;
+							if (qline_partname_para.containsKey(partname)){
+								var paras = qline_partname_para.get(partname);
+								if (paras.containsKey("offset")){
+									offset = Integer.valueOf(paras.get("offset"));
+								}
+							}
+							return String.format(partname, Integer.valueOf(markernum) + offset);
 						}
 					}
 				}
@@ -509,11 +527,13 @@ public abstract class AbstractBaumanAdapter {
 	throws Exception
 	{
 		String field;
-		for (int i=0; i < fields.length-shorter; i++) {
-			ctx.requestField = fields[i];
-			//System.out.println(requestField);
-			field = docpart.getProperty (ctx.requestField).getValue().toString();
-			emitField(marker, ctx.requestField, field, ctx);
+		if (fields != null){
+			for (int i=0; i < fields.length-shorter; i++) {
+				ctx.requestField = fields[i];
+				//System.out.println(requestField);
+				field = docpart.getProperty (ctx.requestField).getValue().toString();
+				emitField(marker, ctx.requestField, field, ctx);
+			}
 		}
 	}
 
@@ -523,7 +543,7 @@ public abstract class AbstractBaumanAdapter {
 		String partName = ctx.bmfv.getPartname(marker);
 		if (partName != null){
 			String[] fields = ctx.bmfv.getLinedef(marker);
-
+			// System.out.println("MArker: " + marker);
 			emitLineStart(marker, partName, fields, ctx);
 			try{
 				DocumentPart docpart = getDocPart (partName, ctx);
