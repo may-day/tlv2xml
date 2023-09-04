@@ -2,13 +2,16 @@
 .settings
 .project
 target
+.gradle/
+build/
+bin/
 compare
 *~
 
 *.crt
-.vscode
 deploy.sh
 convdummy.sh
+dotest_single.sh
 *.tlv
 httpd.py
 *.html

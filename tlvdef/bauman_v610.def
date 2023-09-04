@@ -35,8 +35,8 @@
 #L00,wg_count,calced_wage_cost,calced_wage_revenue,calced_wage_hours
 #M0[1-9],mgName,unknown_1,mgCalcListpriceBased,mgOverheadCostFactor,mgFactor1,mgFactor2,mgFactor3,warrantyCostCalculation,efbMark,calced_cost,calced_revenue
 #M[1-3][0-9],mgName,unknown_1,mgCalcListpriceBased,mgOverheadCostFactor,mgFactor1,mgFactor2,mgFactor3,warrantyCostCalculation,efbMark,calced_cost,calced_revenue
-#L0[1-9],wgName,unknown_1,wgTimeFactor,wgCostPerHour,wgOverheadCostFactor,wgFactor1,wgFactor2,wgPricePerHourHardCoded,warrantyCostCalculation,efbMark,calced_cost,calced_revenue,calced_hours
-#L[1-3][0-9],wgName,unknown_1,wgTimeFactor,wgCostPerHour,wgOverheadCostFactor,wgFactor1,wgFactor2,wgPricePerHourHardCoded,warrantyCostCalculation,efbMark,calced_cost,calced_revenue,calced_hours
+#L0[1-9],wgName,wgTimeFactor,wgCostPerHour,wgOverheadCostFactor,wgFactor1,wgFactor2,wgPricePerHourHardCoded,warrantyCostCalculation,efbMark,calced_cost,calced_revenue,calced_hours
+#L[1-3][0-9],wgName,wgTimeFactor,wgCostPerHour,wgOverheadCostFactor,wgFactor1,wgFactor2,wgPricePerHourHardCoded,warrantyCostCalculation,efbMark,calced_cost,calced_revenue,calced_hours
 #EFB,countEFBLines
 #EFB-ERL
 #EFB-221
