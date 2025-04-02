@@ -8,14 +8,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,7 +29,6 @@ import norman.tools.bm.document.PropertyMissingException;
 import norman.tools.bm.plugins.FormatAdapterException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
 class BaumanFormatVersion implements Comparable<BaumanFormatVersion>{
 	static Pattern markeridx = Pattern.compile("\\D*(\\d*)");
