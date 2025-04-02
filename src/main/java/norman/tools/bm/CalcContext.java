@@ -32,9 +32,9 @@ public class CalcContext extends JBMDocumentPart
 		"shippingName", "shippingAbsolute", "shippingFactor", "calced_shipping_cost", "calced_shipping_revenue",
 		"handlingName", "handlingAbsolute", "handlingFactor", "calced_handling_cost", "calced_handling_revenue",
 		"discountedName","calced_discounted_cost","calced_discounted_revenue",
-		"boqName","calced_all_cost,calced_all_revenue",
-		"calced_material_cost","calced_material_revenue",
-		"calced_wage_cost","calced_wage_revenue", "calced_wage_hours"
+		"boqName","calced_all_ekt","calced_all_cost","calced_all_revenue",
+		"calced_material_ekt","calced_material_cost","calced_material_revenue",
+		"calced_wage_ekt","calced_wage_cost","calced_wage_revenue", "calced_wage_hours"
 	};
 
 
@@ -62,9 +62,9 @@ public class CalcContext extends JBMDocumentPart
 	shippingName, shippingAbsolute, shippingFactor, calced_shipping_cost, calced_shipping_revenue,
 	handlingName, handlingAbsolute, handlingFactor, calced_handling_cost, calced_handling_revenue,    
 	discountedName,calced_discounted_cost,calced_discounted_revenue,
-	boqName,calced_all_cost,calced_all_revenue,
-	calced_material_cost,calced_material_revenue,
-	calced_wage_cost,calced_wage_revenue,calced_wage_hours;
+	boqName,calced_all_ekt,calced_all_cost,calced_all_revenue,
+	calced_material_ekt,calced_material_cost,calced_material_revenue,
+	calced_wage_ekt,calced_wage_cost,calced_wage_revenue,calced_wage_hours;
 
 	public HashMap<Integer, MaterialGroupCalcPage> mg = new HashMap<Integer, MaterialGroupCalcPage>();
 	public HashMap<Integer, WageGroupCalcPage> lg = new HashMap<Integer, WageGroupCalcPage>();
@@ -152,10 +152,13 @@ public class CalcContext extends JBMDocumentPart
 		calced_discounted_cost = new StringBuffer();
 		calced_discounted_revenue = new StringBuffer();
 		boqName = new StringBuffer();
+		calced_all_ekt = new StringBuffer();
 		calced_all_cost = new StringBuffer();
 		calced_all_revenue = new StringBuffer();
+		calced_material_ekt = new StringBuffer();
 		calced_material_cost = new StringBuffer();
 		calced_material_revenue = new StringBuffer();
+		calced_wage_ekt = new StringBuffer();
 		calced_wage_cost = new StringBuffer();
 		calced_wage_revenue = new StringBuffer();
 		calced_wage_hours = new StringBuffer();
@@ -236,10 +239,13 @@ public class CalcContext extends JBMDocumentPart
 		putProperty("calced_discounted_cost", new StringProperty(calced_discounted_cost, true, false));
 		putProperty("calced_discounted_revenue", new StringProperty(calced_discounted_revenue, true, false));
 		putProperty("boqName", new StringProperty(boqName, true, false));
+		putProperty("calced_all_ekt", new StringProperty(calced_all_ekt, true, false));
 		putProperty("calced_all_cost", new StringProperty(calced_all_cost, true, false));
 		putProperty("calced_all_revenue", new StringProperty(calced_all_revenue, true, false));
+		putProperty("calced_material_ekt", new StringProperty(calced_material_ekt, true, false));
 		putProperty("calced_material_cost", new StringProperty(calced_material_cost, true, false));
 		putProperty("calced_material_revenue", new StringProperty(calced_material_revenue, true, false));
+		putProperty("calced_wage_ekt", new StringProperty(calced_wage_ekt, true, false));
 		putProperty("calced_wage_cost", new StringProperty(calced_wage_cost, true, false));
 		putProperty("calced_wage_revenue", new StringProperty(calced_wage_revenue, true, false));
 		putProperty("calced_wage_hours", new StringProperty(calced_wage_hours, true, false));

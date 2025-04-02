@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'norman.tools'
-version = '0.0.12'
+version = '0.0.13'
 
 java {
   sourceCompatibility = '17'
@@ -50,7 +50,7 @@ publishing {
 dependencies {
     // This dependency is used by the application.
 
-  implementation 'commons-io:commons-io:2.13.0'
+  implementation 'commons-io:commons-io:2.18.0'
 }
 
 testing {
@@ -58,7 +58,7 @@ testing {
         // Configure the built-in test suite
         test {
             // Use JUnit Jupiter test framework
-            useJUnitJupiter('5.9.2')
+            useJUnitJupiter('5.12.1')
         }
     }
 }
